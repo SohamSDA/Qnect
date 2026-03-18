@@ -24,7 +24,6 @@ const createTestUser = async () => {
         const email = "test-user@campusor.com";
         const password = "password123";
 
-        // Check if user exists
         let user = await User.findOne({ email });
 
         if (user) {
