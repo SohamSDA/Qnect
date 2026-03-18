@@ -1,0 +1,5 @@
+Name: Siddhant Shekhar
+GitHub Usename: sshekhar563
+Education: B.Tech in CSE (Artificial Intelligence & Machine Learning)
+About Me:
+I am a Third-year B.Tech student specializing in AI & ML with a strong interest in machine learning, computer vision, and open-source development. I actively contribute to open-source projects and enjoy learning by building real-world, scalable solutions.

@@ -1,0 +1,4 @@
+Name: Mohammed Tailor
+GitHub: tailormst
+College: Shri Ramdeobaba College of Engineering & Management, Nagpur
+About: 3rd year AIML undergraduate passionate about competitive programming, machine learning, and open-source contributions.

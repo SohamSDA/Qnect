@@ -1,0 +1,9 @@
+Name: N Satish
+GitHub: https://github.com/SATII2004
+College: K L University
+Branch: CSE (Data Engineering)
+
+About:
+I am a Computer Science student interested in backend systems, data engineering,
+and cloud platforms. I enjoy building scalable systems and contributing to
+open-source projects like CampusOR.

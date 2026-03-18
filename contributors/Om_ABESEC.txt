@@ -1,0 +1,5 @@
+Name: Om Maheshwari
+Role: B.Tech CSE Student
+Interests: Backend development, Open Source, System Design
+Tech Stack: JavaScript, TypeScript, Node.js, Express, React
+Currently Learning: Building scalable backends & contributing to real-world open-source projects

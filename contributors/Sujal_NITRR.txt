@@ -1,0 +1,9 @@
+Name: Sujal Kshatri
+GitHub: https://github.com/suzzzal
+College: NIT Raipur
+Branch: Information Technology
+
+About:
+I am a IT student interested in web dev, ML
+and AI. I enjoy building scalable systems and contributing to
+open-source projects.

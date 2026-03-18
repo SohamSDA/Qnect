@@ -1,0 +1,3 @@
+Name: Krishna Sikheriya
+GitHub Username: Krishna200608  
+Description: I am a passionate software developer with a strong interest in backend systems and clean architecture. I enjoy contributing to open-source projects, following best practices in Git workflows, and building scalable, maintainable solutions. Through OpenCode, I aim to strengthen my real-world development skills and collaborate responsibly within the open-source community.

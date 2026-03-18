@@ -1,0 +1,47 @@
+Aryan Gupta
+
+GitHub: https://github.com/Aryan0512398
+
+
+About Me
+
+I am a full-stack web developer and engineering student with strong expertise in modern web technologies, including HTML, CSS, JavaScript, React, Next.js, TypeScript, and Tailwind CSS. I enjoy building clean, scalable, and user-centric web applications, with a strong focus on performance, maintainable architecture, and real-world usability.
+
+I have hands-on experience in backend development using Node.js, Express.js, REST APIs, MongoDB, and PostgreSQL, along with implementing authentication, role-based access control, and payment gateway integrations. I have also worked with Socket.IO for real-time features, API integrations, and modern deployment workflows.
+
+Additionally, I have practical exposure to Python and data-focused libraries such as NumPy, Pandas, and Matplotlib, and have applied them in analytical and prediction-based projects. I actively participate in hackathons and open-source contributions and enjoy solving complex problems through clean and efficient code.
+
+I am passionate about continuous learning, strengthening my problem-solving and system design skills, and contributing to impactful, scalable, and meaningful projects.
+
+
+Tech Stack
+
+Frontend:
+HTML, CSS, JavaScript
+React, Next.js
+TypeScript, Tailwind CSS
+
+Backend:
+Node.js, Express.js
+REST APIs
+MongoDB, PostgreSQL
+
+Other Tools & Technologies:
+Git and GitHub
+Socket.IO
+Python (NumPy, Pandas, Matplotlib)
+
+
+Currently Exploring
+Advanced backend architectures
+Real-time systems and WebSockets
+Scalable full-stack application design
+
+
+Open to
+Open-source contributions
+Web and Full-Stack Development roles
+Hackathons and collaborative projects
+
+
+Feel free to explore my repositories and connect with me.
