@@ -1,7 +1,7 @@
-# CampusOR  
+# Qnect  
 **Campus Online Queue & Reservation System**
 
-CampusOR is a smart, scalable virtual queue and reservation system for large campuses such as universities, hospitals, hostels, cafeterias, and administrative offices. It replaces physical queues with a real-time digital experience, reducing congestion and improving service efficiency.
+Qnect is a smart, scalable virtual queue and reservation system for large campuses such as universities, hospitals, hostels, cafeterias, and administrative offices. It replaces physical queues with a real-time digital experience, reducing congestion and improving service efficiency.
 
 ---
 
@@ -23,7 +23,7 @@ CampusOR is a smart, scalable virtual queue and reservation system for large cam
 
 ## Overview
 
-Managing queues in large campuses often leads to long wait times, overcrowding, and inefficiencies. CampusOR introduces a virtual queue ecosystem where users can join queues digitally, track their position in real time, and receive timely notifications—without standing in physical lines.
+Managing queues in large campuses often leads to long wait times, overcrowding, and inefficiencies. Qnect introduces a virtual queue ecosystem where users can join queues digitally, track their position in real time, and receive timely notifications—without standing in physical lines.
 
 The system combines real-time communication, predictive analytics, and role-based dashboards to deliver a seamless queue management experience.
 
@@ -44,7 +44,7 @@ Traditional campus queue systems face:
 
 ## Objectives
 
-CampusOR aims to:
+Qnect aims to:
 
 - Digitize queue and token management  
 - Reduce physical waiting and crowding  
@@ -113,7 +113,7 @@ CampusOR aims to:
 ## Folder Structure
 
 ```txt
-campusor/
+qnect/
 ├── frontend/        # Next.js 
 ├── backend/         # Express + MongoDB API
 ├── ml-service/      # FastAPI ML service

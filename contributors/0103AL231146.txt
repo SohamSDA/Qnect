@@ -1,3 +1,0 @@
-Name: Prashant kumar dwivedi
-Github Username: dwivediprashant
-Description: I am from LNCT Bhopal , exploring web dev and building projects.

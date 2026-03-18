@@ -1,3 +1,0 @@
-Name: Apoorv Mittal
-Github Username: Apoorv012
-Description: I am an enthusiast, with my keen interest in backend.

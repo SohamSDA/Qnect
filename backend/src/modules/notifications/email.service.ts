@@ -175,7 +175,7 @@ export const sendEmailVerificationOtp = async (
 
     const result = await sendEmail({
       to: email,
-      subject: "Verify your email - CampusOR",
+      subject: "Verify your email - Qnect",
       html,
       text,
     });
@@ -201,9 +201,9 @@ export const sendAdminInviteEmail = async (
 
     const result = await sendEmail({
       to: email,
-      subject: "You have been invited to join CampusOR as Admin",
+      subject: "You have been invited to join Qnect as Admin",
       html,
-      text: `You have been invited by ${inviterName} to join CampusOR as an Administrator. Please follow this link to accept: ${inviteLink}`,
+      text: `You have been invited by ${inviterName} to join Qnect as an Administrator. Please follow this link to accept: ${inviteLink}`,
     });
 
     if (!result.success) {

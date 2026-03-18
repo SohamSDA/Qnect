@@ -21,7 +21,7 @@ const createTestUser = async () => {
         await mongoose.connect(env.MONGO_URI as string);
         console.log("Connected.");
 
-        const email = "test-user@campusor.com";
+        const email = "test-user@qnect.com";
         const password = "password123";
 
         // Check if user exists
@@ -73,7 +73,7 @@ const createTestUser = async () => {
         console.log("1. Open an Incognito Window or different browser.");
         console.log("2. Open Developer Tools (F12) -> Console.");
         console.log("3. Run the following command locally:");
-        console.log(`   localStorage.setItem("campusor_jwt", "${token}")`);
+        console.log(`   localStorage.setItem("qnect_jwt", "${token}")`);
         console.log("4. Navigate to http://localhost:3000/dashboard/user");
         console.log("   (You should be logged in automatically)");
         console.log("==================================================");

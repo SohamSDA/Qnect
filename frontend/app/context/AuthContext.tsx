@@ -33,8 +33,8 @@ type AuthContextType = {
   isUser: boolean;
 };
 
-const TOKEN_KEY = "campusor_jwt";
-const USER_KEY = "campusor_user";
+const TOKEN_KEY = "qnect_jwt";
+const USER_KEY = "qnect_user";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 

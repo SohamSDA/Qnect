@@ -82,7 +82,7 @@ export default function home() {
             <Link href="/" className="flex items-center gap-3 group">
               <img
                 src="/logo/LOGO.svg"
-                alt="CampusOR logo"
+                alt="Qnect logo"
                 className="h-11 w-auto object-contain drop-shadow-[0_4px_12px_rgba(15,23,42,0.18)] transition-transform duration-300 group-hover:scale-[1.03] md:h-14"
               />
             </Link>
@@ -295,7 +295,7 @@ export default function home() {
               className="max-w-xl text-base text-slate-600 md:text-lg animate-in fade-in slide-in-from-left duration-700"
               style={{ animationDelay: "0.2s" }}
             >
-              CampusOR replaces physical lines with a live, mobile-first queue
+              Qnect replaces physical lines with a live, mobile-first queue
               experience. Keep students moving, reduce crowding, and make every
               service interaction smoother.
             </p>
@@ -313,7 +313,7 @@ export default function home() {
                 href={secondaryCta}
                 className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition-all duration-300 hover:border-slate-300 hover:bg-slate-100 hover:scale-105 hover:shadow-lg"
               >
-                {isAuthenticated ? "Get Started" : "Join CampusOR"}
+                {isAuthenticated ? "Get Started" : "Join Qnect"}
               </Link>
             </div>
             <div
@@ -348,12 +348,12 @@ export default function home() {
               <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
                 <img
                   src="/logo/LOGO-removebg-preview.png"
-                  alt="CampusOR"
+                  alt="Qnect"
                   className="h-10 w-auto object-contain"
                 />
                 <div>
                   <p className="text-sm font-semibold text-slate-900">
-                    CampusOR Live Queue
+                    Qnect Live Queue
                   </p>
                   <p className="text-xs text-slate-500">
                     Powered by smart campus operations
@@ -461,7 +461,7 @@ export default function home() {
                 A live, virtual queue built for campuses.
               </h3>
               <p className="mt-4 text-base text-slate-600">
-                CampusOR replaces physical lines with real-time visibility,
+                Qnect replaces physical lines with real-time visibility,
                 notifications, and operator controls — all in one system.
               </p>
             </div>
@@ -550,7 +550,7 @@ export default function home() {
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="text-center mb-14">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-400">
-              How CampusOR Works
+              How Qnect Works
             </p>
             <h2 className="mt-3 text-3xl font-semibold text-slate-900">
               A simple flow from join to serve.
@@ -627,7 +627,7 @@ export default function home() {
               Ready to modernize your queue experience?
             </h2>
             <p className="mt-3 text-base text-slate-600">
-              Launch CampusOR across services and make every visit faster and
+              Launch Qnect across services and make every visit faster and
               calmer.
             </p>
           </div>

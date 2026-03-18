@@ -29,7 +29,7 @@ def main():
     # ============================================================
 
     BASE_DIR = Path(__file__).resolve().parent
-    CSV_PATH = BASE_DIR.parent.parent / "campusor_wait_time_mock.csv"
+    CSV_PATH = BASE_DIR.parent.parent / "qnect_wait_time_mock.csv"
     MODEL_PATH = BASE_DIR / "wait_time_model.pkl"
 
     # ============================================================

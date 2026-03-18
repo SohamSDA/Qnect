@@ -30,7 +30,7 @@ export const getQueueFinishedEmailHtml = ({
           <!-- Header -->
           <tr>
             <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px 12px 0 0;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">CampusOR</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">Qnect</h1>
               <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">Queue Management System</p>
             </td>
           </tr>
@@ -96,7 +96,7 @@ export const getQueueFinishedEmailHtml = ({
                 <tr>
                   <td style="padding: 15px 20px;">
                     <p style="margin: 0; color: #1e40af; font-size: 14px; font-weight: 600;">
-                      🙏 Thank you for using CampusOR! We hope you had a great experience.
+                      🙏 Thank you for using Qnect! We hope you had a great experience.
                     </p>
                   </td>
                 </tr>
@@ -111,7 +111,7 @@ export const getQueueFinishedEmailHtml = ({
                 We look forward to serving you again!
               </p>
               <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                © ${new Date().getFullYear()} CampusOR. All rights reserved.
+                © ${new Date().getFullYear()} Qnect. All rights reserved.
               </p>
             </td>
           </tr>
@@ -130,7 +130,7 @@ export const getQueueFinishedEmailText = ({
   location,
 }: QueueFinishedEmailProps): string => {
   return `
-Queue Completed! - CampusOR
+Queue Completed! - Qnect
 
 Hello ${userName},
 
@@ -141,10 +141,10 @@ COMPLETED QUEUE: ${queueName}
 =============================
 
 ${location ? `Location: ${location}\n` : ''}
-🙏 Thank you for using CampusOR! We hope you had a great experience.
+🙏 Thank you for using Qnect! We hope you had a great experience.
 
 We look forward to serving you again!
 
-© ${new Date().getFullYear()} CampusOR. All rights reserved.
+© ${new Date().getFullYear()} Qnect. All rights reserved.
   `;
 };

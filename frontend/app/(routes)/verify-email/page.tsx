@@ -107,7 +107,7 @@ export default function VerifyEmailPage() {
             <Link href="/landing" className="flex items-center gap-3 group">
               <img
                 src="/logo/LOGO.svg"
-                alt="CampusOR logo"
+                alt="Qnect logo"
                 className="h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02] md:h-14"
               />
             </Link>

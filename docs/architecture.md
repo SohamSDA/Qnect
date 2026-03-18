@@ -1,12 +1,12 @@
-# System Architecture – CampusOR
+# System Architecture – Qnect
 
 Greetings everyone!!  
 
-This document describes the **official folder structure and architectural organization** of the CampusOR project.  
+This document describes the **official folder structure and architectural organization** of the Qnect project.  
 All contributors are expected to **strictly follow this structure and naming convention** to ensure consistency, scalability, and maintainability across the codebase.
 
 ```txt
-CampusOR/
+Qnect/
 │
 ├── README.md
 ├── .gitignore

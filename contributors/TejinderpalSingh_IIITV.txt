@@ -1,3 +1,0 @@
-Name:Tejinderpal Singh
-Github:Tejinder105
-About: I am a student of IIITV and I love to build full stack applications

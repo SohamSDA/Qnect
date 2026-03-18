@@ -56,7 +56,7 @@ export default function LoginPage() {
             <Link href="/landing" className="flex items-center gap-3 group">
               <img
                 src="/logo/LOGO.svg"
-                alt="CampusOR logo"
+                alt="Qnect logo"
                 className="h-11 w-auto object-contain drop-shadow-[0_4px_12px_rgba(15,23,42,0.18)] transition-transform duration-300 group-hover:scale-[1.03] md:h-14"
               />
             </Link>
@@ -107,7 +107,7 @@ export default function LoginPage() {
           className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-8 transition-all duration-300 hover:shadow-2xl animate-in fade-in zoom-in"
         >
           <h1 className="text-2xl font-semibold text-slate-900 text-center mb-6">
-            Login to CampusOR
+            Login to Qnect
           </h1>
 
           {error && (

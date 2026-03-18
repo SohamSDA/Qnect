@@ -2,12 +2,12 @@ export type Role = "USER" | "OPERATOR" | "ADMIN";
 
 export const profileMock = {
   name: "Aryan Gupta",
-  email: "aryan@campusor.edu",
+  email: "aryan@qnect.edu",
   role: "OPERATOR" as Role,
   joinedAt: "12 Aug 2024",
 
   // USER
-  collegeEmail: "aryan.btech@campusor.edu",
+  collegeEmail: "aryan.btech@qnect.edu",
   activeToken: "A-23",
   recentQueues: [
     { queueName: "Hostel Office", status: "SERVED" },

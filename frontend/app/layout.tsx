@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import GlobalHooks from "./components/GlobalHooks";
 
 export const metadata = {
-  title: "CampusOR",
+  title: "Qnect",
   description: "Campus Online Queue & Reservation System",
 };
 

@@ -92,7 +92,7 @@ export default function UserSidebar() {
           {/* Header */}
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">User Dashboard</h2>
-            <p className="text-sm text-gray-600 mt-1">CampusOR</p>
+            <p className="text-sm text-gray-600 mt-1">Qnect</p>
           </div>
 
           {/* Navigation */}

@@ -1,3 +1,0 @@
-Name: Varad Chitnis
-Github: beetlejuice0
-Description: I am aiml student and a full stack developer

@@ -1,3 +1,0 @@
-Name: Snehal Sanap
-Github username: SnehalSanap0
-About me: I am a Software developer passionate about open-source and clean code. I enjoy collaboration and solving real problems.

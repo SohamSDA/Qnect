@@ -22,7 +22,7 @@ export const getAdminInviteEmailTemplate = (
     </div>
     <div class="content">
       <p>Hello,</p>
-      <p>You have been invited by <strong>${inviterName}</strong> to join <strong>CampusOR</strong> as an Administrator.</p>
+      <p>You have been invited by <strong>${inviterName}</strong> to join <strong>Qnect</strong> as an Administrator.</p>
       <p>Please click the button below to accept the invitation and set up your account:</p>
       <p style="text-align: center;">
         <a href="${inviteLink}" class="btn">Accept Invitation</a>
@@ -31,7 +31,7 @@ export const getAdminInviteEmailTemplate = (
       <p>If you were not expecting this invitation, you can safely ignore this email.</p>
     </div>
     <div class="footer">
-      <p>&copy; ${new Date().getFullYear()} CampusOR. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} Qnect. All rights reserved.</p>
     </div>
   </div>
 </body>

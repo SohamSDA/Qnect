@@ -85,7 +85,7 @@ export default function QueueList() {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             <div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">
-                CampusOR
+                Qnect
               </h1>
               <p className="text-lg sm:text-xl text-slate-600 font-medium">
                 Available Queues

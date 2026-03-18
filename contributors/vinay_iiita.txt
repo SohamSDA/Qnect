@@ -1,3 +1,0 @@
-Name: Vinay Mohan
-Github Username:vinay2047
-Description: Sophomore at IIITA passionate about development.

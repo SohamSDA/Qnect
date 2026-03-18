@@ -32,7 +32,7 @@ export const getQueueReadyEmailHtml = ({
           <!-- Header -->
           <tr>
             <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px 12px 0 0;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">CampusOR</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">Qnect</h1>
               <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">Queue Management System</p>
             </td>
           </tr>
@@ -113,7 +113,7 @@ export const getQueueReadyEmailHtml = ({
                 We look forward to serving you!
               </p>
               <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                © ${new Date().getFullYear()} CampusOR. All rights reserved.
+                © ${new Date().getFullYear()} Qnect. All rights reserved.
               </p>
             </td>
           </tr>
@@ -133,7 +133,7 @@ export const getQueueReadyEmailText = ({
   servicePoint,
 }: QueueReadyEmailProps): string => {
   return `
-IT'S YOUR TURN! - CampusOR
+IT'S YOUR TURN! - Qnect
 
 Hello ${userName},
 
@@ -150,6 +150,6 @@ ${servicePoint ? `Service Point: ${servicePoint}` : ''}
 
 We look forward to serving you!
 
-© ${new Date().getFullYear()} CampusOR. All rights reserved.
+© ${new Date().getFullYear()} Qnect. All rights reserved.
   `;
 };

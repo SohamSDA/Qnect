@@ -1,3 +1,0 @@
-Name: BEESA MANISH
-Github Username: MANISH-BEESA
-Description: I am from MLRIT HYDERABAD , exploring open source and building projects.

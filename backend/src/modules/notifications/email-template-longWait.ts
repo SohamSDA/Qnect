@@ -29,7 +29,7 @@ export const getQueueDelayedEmailHtml = ({
           <!-- Header -->
           <tr>
             <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">CampusOR</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">Qnect</h1>
               <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">Queue Management System</p>
             </td>
           </tr>
@@ -97,7 +97,7 @@ export const getQueueDelayedEmailHtml = ({
                 Thank you for your patience!
               </p>
               <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                © ${new Date().getFullYear()} CampusOR. All rights reserved.
+                © ${new Date().getFullYear()} Qnect. All rights reserved.
               </p>
             </td>
           </tr>
@@ -117,7 +117,7 @@ export const getQueueDelayedEmailText = ({
   queueName,
 }: QueueDelayedEmailProps): string => {
   return `
-Queue Delay Notice - CampusOR
+Queue Delay Notice - Qnect
 
 Hello ${userName},
 
@@ -132,6 +132,6 @@ We apologize for any inconvenience. You don't need to take any action – we'll 
 
 Thank you for your patience!
 
-© ${new Date().getFullYear()} CampusOR. All rights reserved.
+© ${new Date().getFullYear()} Qnect. All rights reserved.
   `;
 };

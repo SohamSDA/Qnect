@@ -24,7 +24,7 @@ export const getEmailVerificationHtml = ({
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.06);">
           <tr>
             <td style="padding:28px 32px; text-align:center; background:linear-gradient(135deg,#0ea5e9,#2563eb); border-radius:12px 12px 0 0;">
-              <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700;">CampusOR</h1>
+              <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700;">Qnect</h1>
               <p style="margin:6px 0 0; color:rgba(255,255,255,0.85); font-size:14px;">Confirm your email to finish signup</p>
             </td>
           </tr>
@@ -47,7 +47,7 @@ export const getEmailVerificationHtml = ({
           </tr>
           <tr>
             <td style="padding:18px 32px; background:#f8fafc; border-radius:0 0 12px 12px; text-align:center;">
-              <p style="margin:0; color:#94a3b8; font-size:12px;">© ${new Date().getFullYear()} CampusOR</p>
+              <p style="margin:0; color:#94a3b8; font-size:12px;">© ${new Date().getFullYear()} Qnect</p>
             </td>
           </tr>
         </table>
@@ -65,7 +65,7 @@ export const getEmailVerificationText = ({
   expiresInMinutes,
 }: EmailVerificationProps): string => {
   return `
-CampusOR - Verify your email
+Qnect - Verify your email
 
 Hi ${userName || "there"},
 
@@ -74,6 +74,6 @@ The code expires in ${expiresInMinutes} minutes.
 
 If you did not request this, you can ignore this email.
 
-© ${new Date().getFullYear()} CampusOR
+© ${new Date().getFullYear()} Qnect
   `;
 };
