@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Qnect  
 **Campus Online Queue & Reservation System**
 
@@ -124,4 +124,4 @@ qnect/
 
 =======
 Qnect.
->>>>>>> 731fbc0a08c76845224479d9284d0c0de5b3988a
+
