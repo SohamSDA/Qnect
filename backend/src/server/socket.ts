@@ -65,10 +65,15 @@ interface ClientToServerEvents {
 
 let io: Server<ClientToServerEvents, ServerToClientEvents>;
 
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
 export function initializeSocket(httpServer: HttpServer): void {
   io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
     cors: {
-      origin: process.env.FRONTEND_URL || "http://localhost:3000",
+      origin: allowedOrigins,
       methods: ["GET", "POST"],
       credentials: true,
     },
