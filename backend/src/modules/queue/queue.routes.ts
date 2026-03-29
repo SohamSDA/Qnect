@@ -6,7 +6,7 @@ import {
   updateTokenStatus,
   getQueueOperatorView,
   getQueuesForUsers,
-  getPredictedWaitTime,
+  getEstimatedWaitTime,
   extendTokenTime,
   markTokenNoShow,
   recallToken,
@@ -14,8 +14,8 @@ import {
 import { verifyJWT, authorize } from "../../middlewares/auth.js";
 
 const router = Router();
-// ML-powered predicted wait time endpoint
-router.get("/:queueId/predicted-wait", getPredictedWaitTime);
+// Backend-native estimated wait time endpoint
+router.get("/:queueId/estimated-wait", getEstimatedWaitTime);
 
 // Public endpoint to get all queues for users
 router.get("/", getQueuesForUsers);

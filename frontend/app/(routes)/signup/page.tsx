@@ -30,10 +30,6 @@ export default function SignupPage() {
     setInfo("");
 
     // Client-side validation for role-specific fields
-    if (role === "user" && !collegeEmail) {
-      setError("College email is required for user role");
-      return;
-    }
     if (role === "operator") {
       if (!department) {
         setError("Department is required for operator role");
@@ -56,7 +52,7 @@ export default function SignupPage() {
         role,
       };
 
-      if (role === "user") {
+      if (role === "user" && collegeEmail.trim()) {
         requestBody.collegeEmail = collegeEmail;
       } else if (role === "operator") {
         requestBody.department = department;
@@ -179,11 +175,10 @@ export default function SignupPage() {
           {role === "user" && (
             <input
               type="email"
-              placeholder="College Email"
+              placeholder="College Email (optional)"
               className="w-full border border-slate-300 px-4 py-3 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
               value={collegeEmail}
               onChange={(e) => setCollegeEmail(e.target.value)}
-              required
             />
           )}
 

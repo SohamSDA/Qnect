@@ -6,34 +6,27 @@ import { AuthRequest } from "../../middlewares/auth.js";
 import { ensureQueueAccess } from "../operator/operator.utils.js";
 import { broadcastQueueUpdate } from "../../server/socket.js";
 
-import { getQueuePredictedWait } from "./services/predictedWait.service.js";
+import { getQueueEstimatedWait } from "./services/estimatedWait.service.js";
 
 // 1: Create a new queue
-// 6: Get predicted wait time for a queue (ML-powered)
-export async function getPredictedWaitTime(req: AuthRequest, res: Response) {
+// 6: Get estimated wait time for a queue (backend-native heuristic)
+export async function getEstimatedWaitTime(req: AuthRequest, res: Response) {
   try {
     const { queueId } = req.params;
-    const predictedWaitMinutes = await getQueuePredictedWait(queueId);
-    if (predictedWaitMinutes === null || predictedWaitMinutes === undefined) {
-      return res.status(200).json({
-        queueId,
-        predictedWaitMinutes: null,
-        success: false,
-        error: "Prediction unavailable",
-      });
-    }
+    const estimatedWaitMinutes = await getQueueEstimatedWait(queueId);
+
     return res.status(200).json({
       queueId,
-      predictedWaitMinutes: Math.round(predictedWaitMinutes),
+      estimatedWaitMinutes,
       success: true,
     });
   } catch (error) {
-    console.error("Predicted Wait Error:", error);
+    console.error("Estimated Wait Error:", error);
     return res.status(500).json({
       queueId: req.params.queueId,
-      predictedWaitMinutes: null,
+      estimatedWaitMinutes: null,
       success: false,
-      error: "Failed to get predicted wait time",
+      error: "Failed to get estimated wait time",
     });
   }
 }
@@ -52,7 +45,10 @@ export async function createQueue(req: AuthRequest, res: Response) {
       });
     }
 
-    if (capacity !== undefined && (isNaN(Number(capacity)) || Number(capacity) <= 0)) {
+    if (
+      capacity !== undefined &&
+      (isNaN(Number(capacity)) || Number(capacity) <= 0)
+    ) {
       return res.status(400).json({
         success: false,
         error: "Capacity must be a positive number",
@@ -82,6 +78,7 @@ export async function createQueue(req: AuthRequest, res: Response) {
       success: true,
       queue: {
         id: queue._id,
+        
         name: queue.name,
         location: queue.location,
         isActive: queue.isActive,
@@ -116,7 +113,10 @@ export async function generateToken(req: AuthRequest, res: Response) {
     let status = 400;
     if (result.retryAfterSeconds) {
       status = 429;
-    } else if (result.error && (result.error.includes("already") || result.error.includes("full"))) {
+    } else if (
+      result.error &&
+      (result.error.includes("already") || result.error.includes("full"))
+    ) {
       status = 409;
     }
     return res.status(status).json(result);
@@ -239,8 +239,13 @@ export async function getQueuesForUsers(req: AuthRequest, res: Response) {
           status: TokenStatus.WAITING,
         });
 
-        // Calculate estimated wait time (5 minutes per waiting person)
-        const estimatedWaitTime = waitingCount * 5;
+        const estimatedWaitTime = await getQueueEstimatedWait(
+          queue._id.toString(),
+          {
+            waitingCount,
+            activeCounters: 1,
+          },
+        );
 
         const isFull = queue.isFull || waitingCount >= capacity;
         const status: "open" | "paused" | "full" = !queue.isActive
@@ -278,9 +283,6 @@ export async function getQueuesForUsers(req: AuthRequest, res: Response) {
   }
 }
 
-
-
-
 // 6: Operator Override Actions
 export async function extendTokenTime(req: AuthRequest, res: Response) {
   try {
@@ -292,7 +294,9 @@ export async function extendTokenTime(req: AuthRequest, res: Response) {
     if (!token) return res.status(404).json({ error: "Token not found" });
 
     if (token.status !== TokenStatus.SERVED || !token.expireAt) {
-      return res.status(400).json({ error: "Token is not currently serving or has no expiry" });
+      return res
+        .status(400)
+        .json({ error: "Token is not currently serving or has no expiry" });
     }
 
     // Extend expiry
@@ -304,7 +308,9 @@ export async function extendTokenTime(req: AuthRequest, res: Response) {
     return res.status(200).json({ success: true, token });
   } catch (error) {
     console.error("Extend Token Error:", error);
-    return res.status(500).json({ success: false, error: "Failed to extend time" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to extend time" });
   }
 }
 
@@ -325,7 +331,9 @@ export async function markTokenNoShow(req: AuthRequest, res: Response) {
     return res.status(200).json({ success: true, token });
   } catch (error) {
     console.error("Mark No-Show Error:", error);
-    return res.status(500).json({ success: false, error: "Failed to mark no-show" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to mark no-show" });
   }
 }
 
@@ -337,8 +345,14 @@ export async function recallToken(req: AuthRequest, res: Response) {
     if (!token) return res.status(404).json({ error: "Token not found" });
 
     // Only recall expired/skipped tokens
-    if (![TokenStatus.EXPIRED, TokenStatus.SKIPPED].includes(token.status as TokenStatus)) {
-      return res.status(400).json({ error: "Can only recall expired or skipped tokens" });
+    if (
+      ![TokenStatus.EXPIRED, TokenStatus.SKIPPED].includes(
+        token.status as TokenStatus,
+      )
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Can only recall expired or skipped tokens" });
     }
 
     // Set back to SERVED
@@ -356,6 +370,8 @@ export async function recallToken(req: AuthRequest, res: Response) {
     return res.status(200).json({ success: true, token });
   } catch (error) {
     console.error("Recall Token Error:", error);
-    return res.status(500).json({ success: false, error: "Failed to recall token" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to recall token" });
   }
 }

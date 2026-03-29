@@ -26,7 +26,7 @@ export interface RegisterDetails {
   password: string;
   role?: UserRole;
   // Role-specific fields
-  collegeEmail?: string; // Required for "user" role
+  collegeEmail?: string; // Optional metadata for "user" role
   department?: string; // Required for "operator" role
   position?: string; // Required for "operator" role
 }
@@ -111,11 +111,7 @@ export const registerUser = async (
   
   const finalRole = role || "user";
 
-  if (finalRole === "user") {
-    if (!collegeEmail) {
-      throw new Error("College email is required for user role");
-    }
-  } else if (finalRole === "operator") {
+  if (finalRole === "operator") {
     if (!department) {
       throw new Error("Department is required for operator role");
     }
