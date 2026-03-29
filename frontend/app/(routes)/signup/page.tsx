@@ -8,7 +8,7 @@ import { apiService } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 type UserRole = "user" | "operator";
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function SignupPage() {
   const { login } = useAuth();
@@ -61,8 +61,6 @@ export default function SignupPage() {
 
       await apiService.post("/auth/register", requestBody, false);
       router.push(`/verify-email?email=${encodeURIComponent(email)}`);
-
-
     } catch (err: any) {
       setError(err.message);
     } finally {

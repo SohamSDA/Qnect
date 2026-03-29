@@ -90,14 +90,14 @@ const applyEmailOtp = async (user: IUser): Promise<{ otp: string }> => {
 
   user.emailOtpHash = await bcrypt.hash(otp, SALT);
   user.emailOtpExpiresAt = new Date(
-    Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000
+    Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000,
   );
 
   await user.save();
 
   if (env.NODE_ENV !== "production") {
     console.info(
-      ` OTP for ${user.email}: ${otp} (expires in ${OTP_EXPIRY_MINUTES}m)`
+      ` OTP for ${user.email}: ${otp} (expires in ${OTP_EXPIRY_MINUTES}m)`,
     );
   }
 
@@ -105,10 +105,11 @@ const applyEmailOtp = async (user: IUser): Promise<{ otp: string }> => {
 };
 
 export const registerUser = async (
-  input: RegisterDetails
+  input: RegisterDetails,
 ): Promise<SafeUser> => {
-  const { name, email, password, role, collegeEmail, department, position } = input;
-  
+  const { name, email, password, role, collegeEmail, department, position } =
+    input;
+
   const finalRole = role || "user";
 
   if (finalRole === "operator") {
@@ -126,7 +127,7 @@ export const registerUser = async (
     throw new AuthError(
       "Email is already registered. Please login or verify your email.",
       400,
-      "EMAIL_TAKEN"
+      "EMAIL_TAKEN",
     );
   }
 
@@ -164,7 +165,12 @@ export const registerUser = async (
   const { otp } = await applyEmailOtp(user);
 
   try {
-    await sendEmailVerificationOtp(user.email, user.name, otp, OTP_EXPIRY_MINUTES);
+    await sendEmailVerificationOtp(
+      user.email,
+      user.name,
+      otp,
+      OTP_EXPIRY_MINUTES,
+    );
   } catch (error) {
     // Email failures should not block signup
     console.error("Failed to send verification email:", error);
@@ -204,7 +210,7 @@ export const loginUser = async (input: LoginDetails): Promise<LoginResult> => {
     throw new AuthError(
       "Email not verified. Please verify your email to continue.",
       403,
-      "EMAIL_NOT_VERIFIED"
+      "EMAIL_NOT_VERIFIED",
     );
   }
 
@@ -215,7 +221,7 @@ export const loginUser = async (input: LoginDetails): Promise<LoginResult> => {
 };
 
 export const verifyEmailOtp = async (
-  input: VerifyOtpInput
+  input: VerifyOtpInput,
 ): Promise<LoginResult> => {
   const { email, otp } = input;
 
@@ -232,7 +238,7 @@ export const verifyEmailOtp = async (
     throw new AuthError(
       "No OTP found. Please request a new code.",
       400,
-      "OTP_MISSING"
+      "OTP_MISSING",
     );
   }
 
@@ -240,7 +246,7 @@ export const verifyEmailOtp = async (
     throw new AuthError(
       "OTP expired. Please request a new code.",
       400,
-      "OTP_EXPIRED"
+      "OTP_EXPIRED",
     );
   }
 
@@ -263,7 +269,7 @@ export const verifyEmailOtp = async (
 };
 
 export const resendEmailOtp = async (
-  input: ResendOtpInput
+  input: ResendOtpInput,
 ): Promise<{ message: string }> => {
   const { email } = input;
 
@@ -284,7 +290,7 @@ export const resendEmailOtp = async (
       user.email,
       user.name,
       otp,
-      OTP_EXPIRY_MINUTES
+      OTP_EXPIRY_MINUTES,
     );
   } catch (error) {
     console.error("Failed to resend verification email:", error);
@@ -308,7 +314,7 @@ export interface CreateAdminResponse {
 }
 
 export const createAdminUser = async (
-  input: CreateAdminDetails
+  input: CreateAdminDetails,
 ): Promise<CreateAdminResponse> => {
   const { name, email, password, createdByAdminId } = input;
 
@@ -328,7 +334,7 @@ export const createAdminUser = async (
     password: hashedPassword,
     role: "admin" as UserRole,
     emailVerified: false,
-    createdByAdmin: createdByAdminId
+    createdByAdmin: createdByAdminId,
   };
 
   const userResult = await User.create(userData);
@@ -337,7 +343,12 @@ export const createAdminUser = async (
   const { otp } = await applyEmailOtp(user);
 
   try {
-    await sendEmailVerificationOtp(user.email, user.name, otp, OTP_EXPIRY_MINUTES);
+    await sendEmailVerificationOtp(
+      user.email,
+      user.name,
+      otp,
+      OTP_EXPIRY_MINUTES,
+    );
   } catch (error) {
     // Email failures should not block signup
     console.error("Failed to send verification email:", error);
@@ -345,7 +356,7 @@ export const createAdminUser = async (
 
   return {
     success: true,
-    message: "Admin invitation sent"
+    message: "Admin invitation sent",
   };
 };
 
@@ -359,7 +370,7 @@ export interface AcceptAdminInviteDetails {
 }
 
 export const acceptAdminInvite = async (
-  input: AcceptAdminInviteDetails
+  input: AcceptAdminInviteDetails,
 ): Promise<LoginResult> => {
   const { email, token, name, password } = input;
 
@@ -385,8 +396,8 @@ export const acceptAdminInvite = async (
   // Create User
   const existing = await User.findOne({ email });
   if (existing) {
-     // For simplicity and security, invite flow usually creates the account.
-     throw new AuthError("User already exists", 400);
+    // For simplicity and security, invite flow usually creates the account.
+    throw new AuthError("User already exists", 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, SALT);
@@ -402,7 +413,7 @@ export const acceptAdminInvite = async (
 
   const userResult = await User.create(userData);
   const user = Array.isArray(userResult) ? userResult[0] : userResult;
-  
+
   // Mark invite as used
   invite.isUsed = true;
   await invite.save();
