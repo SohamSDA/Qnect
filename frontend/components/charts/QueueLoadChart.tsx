@@ -106,7 +106,7 @@ export default function QueueLoadChart() {
               boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
             }}
             labelStyle={{ fontWeight: 600 }}
-            formatter={(value: number) => [`${value}`, "Active Tokens"]}
+            formatter={(value) => [`${value ?? 0}`, "Active Tokens"]}
           />
 
           <Line

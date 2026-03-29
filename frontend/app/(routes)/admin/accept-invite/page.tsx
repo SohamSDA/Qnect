@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../../context/AuthContext";
@@ -9,6 +9,14 @@ import Footer from "../../../../components/footer/Footer";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function AcceptInvitePage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-slate-50" />}>
+      <AcceptInvitePageContent />
+    </Suspense>
+  );
+}
+
+function AcceptInvitePageContent() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

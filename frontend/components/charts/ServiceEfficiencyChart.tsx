@@ -64,6 +64,10 @@ export default function ServiceEfficiencyChart() {
   }
 
   const totalCount = data.reduce((sum, item) => sum + item.count, 0);
+  const pieData = data.map((item) => ({
+    status: item.status,
+    count: item.count,
+  }));
 
   if (totalCount === 0) {
     return (
@@ -86,7 +90,7 @@ export default function ServiceEfficiencyChart() {
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
-            data={data}
+            data={pieData}
             dataKey="count"
             nameKey="status"
             outerRadius={95}
@@ -96,7 +100,7 @@ export default function ServiceEfficiencyChart() {
               `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
             }
           >
-            {data.map((_, i) => (
+            {pieData.map((_, i) => (
               <Cell key={i} fill={COLORS[i % COLORS.length]} />
             ))}
           </Pie>

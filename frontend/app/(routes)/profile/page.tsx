@@ -31,7 +31,13 @@ export default function ProfilePage() {
     );
   }
 
-  const profileRole = (role || user.role || "user").toUpperCase();
+  const resolvedRole = role || user.role || "user";
+  const profileRole =
+    resolvedRole === "admin"
+      ? "ADMIN"
+      : resolvedRole === "operator"
+      ? "OPERATOR"
+      : "USER";
   const joinedAt = "Not available";
 
   return (

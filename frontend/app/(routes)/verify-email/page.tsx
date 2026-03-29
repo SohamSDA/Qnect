@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
@@ -10,6 +10,14 @@ import { apiService } from "../../services/api";
 const OTP_INPUT_LENGTH = 6;
 
 export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-slate-50" />}>
+      <VerifyEmailPageContent />
+    </Suspense>
+  );
+}
+
+function VerifyEmailPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { login } = useAuth();
