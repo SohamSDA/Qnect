@@ -27,7 +27,7 @@ function VerifyEmailPageContent() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [info, setInfo] = useState(
-    initialEmail ? `We sent a 6-digit code to ${initialEmail}.` : ""
+    initialEmail ? `We sent a 6-digit code to ${initialEmail}.` : "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -76,7 +76,11 @@ function VerifyEmailPageContent() {
     setIsSubmitting(true);
 
     try {
-      const data = await apiService.post("/auth/verify-email", { email, otp }, false);
+      const data = await apiService.post(
+        "/auth/verify-email",
+        { email, otp },
+        false,
+      );
       login(data.token, data.user);
       router.replace(destinationRoute(data.user?.role));
     } catch (err: any) {

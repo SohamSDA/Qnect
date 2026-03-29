@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import Footer from "../../../components/footer/Footer";
 import { apiService } from "@/app/services/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function LoginPage() {
   return (
@@ -32,7 +32,11 @@ function LoginPageContent() {
     setIsLoading(true);
 
     try {
-      const data = await apiService.post("/auth/login", { email, password }, false);
+      const data = await apiService.post(
+        "/auth/login",
+        { email, password },
+        false,
+      );
 
       login(data.token, data.user);
 

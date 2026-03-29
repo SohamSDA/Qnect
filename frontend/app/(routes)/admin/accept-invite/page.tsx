@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../../components/footer/Footer";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function AcceptInvitePage() {
   return (
@@ -80,14 +80,20 @@ function AcceptInvitePageContent() {
 
   if (!token || !email) {
     return (
-       <main className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
-         <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
-           <h1 className="text-2xl font-bold text-red-600 mb-4">Invalid Invitation</h1>
-           <p className="text-slate-600 mb-6">The invitation link is missing required information.</p>
-           <Link href="/login" className="text-sky-600 hover:underline">Go to Login</Link>
-         </div>
-       </main>
-    )
+      <main className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Invalid Invitation
+          </h1>
+          <p className="text-slate-600 mb-6">
+            The invitation link is missing required information.
+          </p>
+          <Link href="/login" className="text-sky-600 hover:underline">
+            Go to Login
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -117,7 +123,8 @@ function AcceptInvitePageContent() {
               Accept Admin Invitation
             </h1>
             <p className="text-sm text-slate-500">
-               Setting up account for <span className="font-medium text-slate-700">{email}</span>
+              Setting up account for{" "}
+              <span className="font-medium text-slate-700">{email}</span>
             </p>
           </div>
 
@@ -129,41 +136,47 @@ function AcceptInvitePageContent() {
 
           <div className="space-y-4">
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                <input
-                    type="text"
-                    placeholder="John Doe"
-                    className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="John Doe"
+                className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Passowrd</label>
-                <input
-                    type="password"
-                    placeholder="Create a strong password"
-                    className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                />
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Passowrd
+              </label>
+              <input
+                type="password"
+                placeholder="Create a strong password"
+                className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
-                <input
-                    type="password"
-                    placeholder="Confirm your password"
-                    className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    minLength={6}
-                />
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                className="w-full border border-slate-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+              />
             </div>
           </div>
 

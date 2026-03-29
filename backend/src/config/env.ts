@@ -44,7 +44,7 @@ const getEnvConfig = (): EnvConfig => {
   }
 
   return {
-    PORT: PORT ? parseInt(PORT, 10) : 5000,
+    PORT: PORT ? parseInt(PORT, 10) : 8080,
     MONGO_URI,
     NODE_ENV: NODE_ENV || "development",
     JWT_SECRET,

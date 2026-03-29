@@ -87,17 +87,9 @@ export default function QueueLoadChart() {
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
-          <XAxis
-            dataKey="time"
-            tick={{ fontSize: 12 }}
-            tickLine={false}
-          />
+          <XAxis dataKey="time" tick={{ fontSize: 12 }} tickLine={false} />
 
-          <YAxis
-            tick={{ fontSize: 12 }}
-            tickLine={false}
-            axisLine={false}
-          />
+          <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
 
           <Tooltip
             contentStyle={{

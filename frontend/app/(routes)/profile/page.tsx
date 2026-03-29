@@ -36,8 +36,8 @@ export default function ProfilePage() {
     resolvedRole === "admin"
       ? "ADMIN"
       : resolvedRole === "operator"
-      ? "OPERATOR"
-      : "USER";
+        ? "OPERATOR"
+        : "USER";
   const joinedAt = "Not available";
 
   return (
