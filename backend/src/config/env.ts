@@ -68,4 +68,3 @@ const getEnvConfig = (): EnvConfig => {
 };
 
 export const env = getEnvConfig();
-

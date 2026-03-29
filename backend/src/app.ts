@@ -12,11 +12,16 @@ app.use(
     origin: env.FRONTEND_URL, // Allow only your frontend
     credentials: true, // Allow cookies/tokens if needed
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 
 // basic middleware
 app.use(express.json());
+
+
+app.get("/", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 // Main routes
 app.use("/api", apiRouter);
