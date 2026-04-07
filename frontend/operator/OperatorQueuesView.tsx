@@ -45,11 +45,15 @@ export default function OperatorQueuesView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionQueueId, setActionQueueId] = useState<string | null>(null);
-  const [capacityEdits, setCapacityEdits] = useState<Record<string, string>>({});
+  const [capacityEdits, setCapacityEdits] = useState<Record<string, string>>(
+    {},
+  );
   const [savingCapacity, setSavingCapacity] = useState<string | null>(null);
   const [editingQueueId, setEditingQueueId] = useState<string | null>(null);
   const [editForms, setEditForms] = useState<Record<string, QueueEditForm>>({});
-  const [savingEditQueueId, setSavingEditQueueId] = useState<string | null>(null);
+  const [savingEditQueueId, setSavingEditQueueId] = useState<string | null>(
+    null,
+  );
   const [deletingQueueId, setDeletingQueueId] = useState<string | null>(null);
 
   const loadQueues = useCallback(async () => {
@@ -61,7 +65,10 @@ export default function OperatorQueuesView() {
       const parsed = parseQueues(data);
       setCapacityEdits(
         parsed.reduce(
-          (acc, queue) => ({ ...acc, [queue.id]: String(queue.capacity ?? "") }),
+          (acc, queue) => ({
+            ...acc,
+            [queue.id]: String(queue.capacity ?? ""),
+          }),
           {},
         ),
       );
@@ -102,22 +109,22 @@ export default function OperatorQueuesView() {
       await apiService.patch(
         `/operator/queues/${queue.id}/${action}`,
         {},
-        true
+        true,
       );
       toast.success(
         queue.status === "ACTIVE"
           ? "Queue paused successfully."
-          : "Queue resumed successfully."
+          : "Queue resumed successfully.",
       );
       setQueues((prev) =>
         prev.map((item) =>
           item.id === queue.id
             ? {
-              ...item,
-              status: queue.status === "ACTIVE" ? "PAUSED" : "ACTIVE",
-            }
-            : item
-        )
+                ...item,
+                status: queue.status === "ACTIVE" ? "PAUSED" : "ACTIVE",
+              }
+            : item,
+        ),
       );
     } catch (err: unknown) {
       const message =
@@ -150,11 +157,10 @@ export default function OperatorQueuesView() {
         prev.map((item) =>
           item.id === queue.id
             ? {
-              ...item,
-              capacity: nextCapacity,
-              isFull:
-                (item.waitingCount ?? 0) >= nextCapacity ? true : false,
-            }
+                ...item,
+                capacity: nextCapacity,
+                isFull: (item.waitingCount ?? 0) >= nextCapacity ? true : false,
+              }
             : item,
         ),
       );
@@ -347,12 +353,13 @@ export default function OperatorQueuesView() {
                     </p>
                   </div>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${queue.status === "ACTIVE"
-                      ? "bg-green-100 text-green-700"
-                      : queue.isFull
-                        ? "bg-red-100 text-red-700"
-                        : "bg-amber-100 text-amber-700"
-                      }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      queue.status === "ACTIVE"
+                        ? "bg-green-100 text-green-700"
+                        : queue.isFull
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                    }`}
                   >
                     {queue.isFull
                       ? "Full"
@@ -377,7 +384,8 @@ export default function OperatorQueuesView() {
                   <div className="bg-slate-50 rounded-lg p-3">
                     <p className="text-slate-500">Available</p>
                     <p className="text-slate-900 font-semibold">
-                      {queue.capacity !== undefined && queue.waitingCount !== undefined
+                      {queue.capacity !== undefined &&
+                      queue.waitingCount !== undefined
                         ? Math.max(queue.capacity - queue.waitingCount, 0)
                         : "—"}
                     </p>
@@ -496,7 +504,9 @@ export default function OperatorQueuesView() {
                         type="number"
                         min={1}
                         placeholder="Capacity"
-                        value={editForms[queue.id]?.capacity ?? queue.capacity ?? ""}
+                        value={
+                          editForms[queue.id]?.capacity ?? queue.capacity ?? ""
+                        }
                         onChange={(e) =>
                           setEditForms((prev) => ({
                             ...prev,
@@ -550,7 +560,9 @@ export default function OperatorQueuesView() {
                         disabled={savingEditQueueId === queue.id}
                         className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
                       >
-                        {savingEditQueueId === queue.id ? "Saving..." : "Save Changes"}
+                        {savingEditQueueId === queue.id
+                          ? "Saving..."
+                          : "Save Changes"}
                       </button>
                       <button
                         onClick={() => setEditingQueueId(null)}

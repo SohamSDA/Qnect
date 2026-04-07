@@ -27,12 +27,7 @@ router.get("/", getQueuesForUsers);
 router.post("/", verifyJWT, authorize("operator", "admin"), createQueue);
 
 // Only operators/admins can edit their queues (admins can edit any)
-router.patch(
-  "/:queueId",
-  verifyJWT,
-  authorize("operator", "admin"),
-  editQueue,
-);
+router.patch("/:queueId", verifyJWT, authorize("operator", "admin"), editQueue);
 
 // Only operators/admins can delete their queues (admins can delete any)
 router.delete(

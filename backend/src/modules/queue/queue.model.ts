@@ -72,7 +72,7 @@ const queueSchema = new Schema<IQueue>(
       max: 10,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // [UPDATED] Unique index on name + location

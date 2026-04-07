@@ -57,7 +57,9 @@ export async function createQueue(req: AuthRequest, res: Response) {
 
     if (
       activeCounters !== undefined &&
-      (isNaN(Number(activeCounters)) || Number(activeCounters) <= 0 || Number(activeCounters) > 10)
+      (isNaN(Number(activeCounters)) ||
+        Number(activeCounters) <= 0 ||
+        Number(activeCounters) > 10)
     ) {
       return res.status(400).json({
         success: false,
@@ -116,7 +118,9 @@ export async function editQueue(req: AuthRequest, res: Response) {
     // Check access
     const { queue, error } = await ensureQueueAccess(queueId, req.user);
     if (error) {
-      return res.status(error.status).json({ success: false, error: error.message });
+      return res
+        .status(error.status)
+        .json({ success: false, error: error.message });
     }
     if (!queue) {
       return res.status(404).json({ success: false, error: "Queue not found" });
@@ -135,7 +139,9 @@ export async function editQueue(req: AuthRequest, res: Response) {
 
     if (
       activeCounters !== undefined &&
-      (isNaN(Number(activeCounters)) || Number(activeCounters) <= 0 || Number(activeCounters) > 10)
+      (isNaN(Number(activeCounters)) ||
+        Number(activeCounters) <= 0 ||
+        Number(activeCounters) > 10)
     ) {
       return res.status(400).json({
         success: false,
@@ -144,7 +150,10 @@ export async function editQueue(req: AuthRequest, res: Response) {
     }
 
     // Check for duplicate if changing name/location
-    if ((name || location) && (name !== queue.name || location !== queue.location)) {
+    if (
+      (name || location) &&
+      (name !== queue.name || location !== queue.location)
+    ) {
       const existing = await Queue.findOne({
         name: name || queue.name,
         location: location || queue.location,
@@ -162,7 +171,8 @@ export async function editQueue(req: AuthRequest, res: Response) {
     if (name) queue.name = name;
     if (location) queue.location = location;
     if (capacity !== undefined) queue.capacity = Number(capacity);
-    if (activeCounters !== undefined) queue.activeCounters = Number(activeCounters);
+    if (activeCounters !== undefined)
+      queue.activeCounters = Number(activeCounters);
 
     await queue.save();
 
@@ -195,7 +205,9 @@ export async function deleteQueue(req: AuthRequest, res: Response) {
     // Check access
     const { queue, error } = await ensureQueueAccess(queueId, req.user);
     if (error) {
-      return res.status(error.status).json({ success: false, error: error.message });
+      return res
+        .status(error.status)
+        .json({ success: false, error: error.message });
     }
     if (!queue) {
       return res.status(404).json({ success: false, error: "Queue not found" });
@@ -210,7 +222,8 @@ export async function deleteQueue(req: AuthRequest, res: Response) {
     if (activeTokens > 0) {
       return res.status(409).json({
         success: false,
-        error: "Cannot delete queue with active tokens. Please clear all tokens first.",
+        error:
+          "Cannot delete queue with active tokens. Please clear all tokens first.",
       });
     }
 
