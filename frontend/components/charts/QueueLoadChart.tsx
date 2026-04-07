@@ -13,6 +13,13 @@ import {
 import { fetchQueueLoadAnalytics, QueueLoad } from "@/lib/api/admin";
 import ChartWrapper from "./ChartWrapper";
 
+const placeholderData: QueueLoad[] = [
+  { time: "09:00", activeTokens: 1 },
+  { time: "10:00", activeTokens: 3 },
+  { time: "11:00", activeTokens: 2 },
+  { time: "12:00", activeTokens: 4 },
+];
+
 export default function QueueLoadChart() {
   const [data, setData] = useState<QueueLoad[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,27 +69,21 @@ export default function QueueLoadChart() {
     );
   }
 
-  if (data.length === 0) {
-    return (
-      <ChartWrapper
-        title="Queue Load Throughout the Day"
-        description="Displays how the number of active tokens changes across different time intervals."
-      >
-        <div className="flex items-center justify-center h-[260px]">
-          <p className="text-gray-500">No data available for today</p>
-        </div>
-      </ChartWrapper>
-    );
-  }
+  const hasData = data.length > 0;
+  const chartData = hasData ? data : placeholderData;
 
   return (
     <ChartWrapper
       title="Queue Load Throughout the Day"
-      description="Displays how the number of active tokens changes across different time intervals."
+      description={
+        hasData
+          ? "Displays how the number of active tokens changes across different time intervals."
+          : "No live data yet. Showing a placeholder trend until activity starts."
+      }
     >
       <ResponsiveContainer width="100%" height={260}>
         <LineChart
-          data={data}
+          data={chartData}
           margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -104,7 +105,7 @@ export default function QueueLoadChart() {
           <Line
             type="monotone"
             dataKey="activeTokens"
-            stroke="#3b82f6"
+            stroke={hasData ? "#3b82f6" : "#94a3b8"}
             strokeWidth={3}
             dot={{ r: 4, strokeWidth: 2, fill: "#ffffff" }}
             activeDot={{ r: 7 }}

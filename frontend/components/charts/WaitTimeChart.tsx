@@ -12,6 +12,12 @@ import {
 import { fetchAvgWaitTimeAnalytics, AvgWaitTime } from "@/lib/api/admin";
 import ChartWrapper from "./ChartWrapper";
 
+const placeholderData: AvgWaitTime[] = [
+  { queue: "Admissions", avgWaitMinutes: 8 },
+  { queue: "Library", avgWaitMinutes: 5 },
+  { queue: "Accounts", avgWaitMinutes: 11 },
+];
+
 export default function WaitTimeChart() {
   const [data, setData] = useState<AvgWaitTime[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,27 +67,21 @@ export default function WaitTimeChart() {
     );
   }
 
-  if (data.length === 0) {
-    return (
-      <ChartWrapper
-        title="Average Waiting Time per Queue"
-        description="Shows the average time users wait in different queues."
-      >
-        <div className="flex items-center justify-center h-[280px]">
-          <p className="text-gray-500">No wait time data available</p>
-        </div>
-      </ChartWrapper>
-    );
-  }
+  const hasData = data.length > 0;
+  const chartData = hasData ? data : placeholderData;
 
   return (
     <ChartWrapper
       title="Average Waiting Time per Queue"
-      description="Shows the average time users wait in different queues."
+      description={
+        hasData
+          ? "Shows the average time users wait in different queues."
+          : "No live data yet. Showing sample wait-time bars for layout preview."
+      }
     >
       <ResponsiveContainer width="100%" height={280}>
         <BarChart
-          data={data}
+          data={chartData}
           layout="vertical"
           margin={{ left: 40 }}
         >
@@ -94,7 +94,7 @@ export default function WaitTimeChart() {
           />
           <Bar
             dataKey="avgWaitMinutes"
-            fill="#16a34a"
+            fill={hasData ? "#16a34a" : "#94a3b8"}
             radius={[0, 6, 6, 0]}
             animationDuration={700}
           />

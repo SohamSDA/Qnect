@@ -5,6 +5,15 @@
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+type ApiPayload<T> =
+  | T
+  | {
+      data?: T;
+      result?: T;
+      analytics?: T;
+      summary?: T;
+    };
+
 // Helper to get auth headers
 const getAuthHeaders = (): HeadersInit => {
   if (typeof window === "undefined") return {};
@@ -19,6 +28,29 @@ const getAuthHeaders = (): HeadersInit => {
   }
 
   return headers;
+};
+
+const extractPayload = <T>(payload: ApiPayload<T>): T => {
+  if (payload && typeof payload === "object" && !Array.isArray(payload)) {
+    const objectPayload = payload as {
+      data?: T;
+      result?: T;
+      analytics?: T;
+      summary?: T;
+    };
+
+    if (objectPayload.data !== undefined) return objectPayload.data;
+    if (objectPayload.result !== undefined) return objectPayload.result;
+    if (objectPayload.analytics !== undefined) return objectPayload.analytics;
+    if (objectPayload.summary !== undefined) return objectPayload.summary;
+  }
+
+  return payload as T;
+};
+
+const parseJsonResponse = async <T>(response: Response): Promise<T> => {
+  const payload = (await response.json()) as ApiPayload<T>;
+  return extractPayload(payload);
 };
 
 // Type definitions matching backend responses
@@ -63,7 +95,15 @@ export const fetchDashboardSummary = async (): Promise<DashboardSummary> => {
     throw new Error(`Failed to fetch dashboard summary: ${response.statusText}`);
   }
 
-  return response.json();
+  const summary = await parseJsonResponse<Partial<DashboardSummary>>(response);
+
+  return {
+    activeTokens: Number(summary.activeTokens ?? 0),
+    servedToday: Number(summary.servedToday ?? 0),
+    skippedTokens: Number(summary.skippedTokens ?? 0),
+    totalTokensToday: Number(summary.totalTokensToday ?? 0),
+    peakHour: summary.peakHour || "N/A",
+  };
 };
 
 /**
@@ -79,7 +119,13 @@ export const fetchQueueLoadAnalytics = async (): Promise<QueueLoad[]> => {
     throw new Error(`Failed to fetch queue load analytics: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await parseJsonResponse<QueueLoad[] | unknown>(response);
+  return Array.isArray(data)
+    ? data.map((item) => ({
+        time: String((item as QueueLoad).time ?? ""),
+        activeTokens: Number((item as QueueLoad).activeTokens ?? 0),
+      }))
+    : [];
 };
 
 /**
@@ -95,7 +141,13 @@ export const fetchTokensServedAnalytics = async (): Promise<TokensServed[]> => {
     throw new Error(`Failed to fetch tokens served analytics: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await parseJsonResponse<TokensServed[] | unknown>(response);
+  return Array.isArray(data)
+    ? data.map((item) => ({
+        hour: String((item as TokensServed).hour ?? ""),
+        served: Number((item as TokensServed).served ?? 0),
+      }))
+    : [];
 };
 
 /**
@@ -111,7 +163,13 @@ export const fetchAvgWaitTimeAnalytics = async (): Promise<AvgWaitTime[]> => {
     throw new Error(`Failed to fetch wait time analytics: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await parseJsonResponse<AvgWaitTime[] | unknown>(response);
+  return Array.isArray(data)
+    ? data.map((item) => ({
+        queue: String((item as AvgWaitTime).queue ?? "Unknown"),
+        avgWaitMinutes: Number((item as AvgWaitTime).avgWaitMinutes ?? 0),
+      }))
+    : [];
 };
 
 /**
@@ -127,7 +185,13 @@ export const fetchTokenStatusAnalytics = async (): Promise<TokenStatusCount[]> =
     throw new Error(`Failed to fetch token status analytics: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await parseJsonResponse<TokenStatusCount[] | unknown>(response);
+  return Array.isArray(data)
+    ? data.map((item) => ({
+        status: String((item as TokenStatusCount).status ?? "Unknown"),
+        count: Number((item as TokenStatusCount).count ?? 0),
+      }))
+    : [];
 };
 
 export interface AdminUser {

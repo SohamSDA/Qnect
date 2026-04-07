@@ -13,6 +13,13 @@ import { fetchTokenStatusAnalytics, TokenStatusCount } from "@/lib/api/admin";
 import ChartWrapper from "./ChartWrapper";
 
 const COLORS = ["#facc15", "#22c55e", "#ef4444", "#6b7280"];
+const PLACEHOLDER_COLORS = ["#cbd5e1", "#94a3b8", "#cbd5e1", "#94a3b8"];
+const placeholderData: TokenStatusCount[] = [
+  { status: "Waiting", count: 3 },
+  { status: "Served", count: 5 },
+  { status: "Skipped", count: 1 },
+  { status: "Cancelled", count: 1 },
+];
 
 export default function ServiceEfficiencyChart() {
   const [data, setData] = useState<TokenStatusCount[]>([]);
@@ -64,28 +71,20 @@ export default function ServiceEfficiencyChart() {
   }
 
   const totalCount = data.reduce((sum, item) => sum + item.count, 0);
-  const pieData = data.map((item) => ({
+  const hasData = totalCount > 0;
+  const pieData = (hasData ? data : placeholderData).map((item) => ({
     status: item.status,
     count: item.count,
   }));
 
-  if (totalCount === 0) {
-    return (
-      <ChartWrapper
-        title="Service Efficiency"
-        description="Distribution of token statuses across the system."
-      >
-        <div className="flex items-center justify-center h-[300px]">
-          <p className="text-gray-500">No token status data available</p>
-        </div>
-      </ChartWrapper>
-    );
-  }
-
   return (
     <ChartWrapper
       title="Service Efficiency"
-      description="Distribution of token statuses across the system."
+      description={
+        hasData
+          ? "Distribution of token statuses across the system."
+          : "No live data yet. Showing sample status distribution for layout preview."
+      }
     >
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
@@ -101,7 +100,14 @@ export default function ServiceEfficiencyChart() {
             }
           >
             {pieData.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              <Cell
+                key={i}
+                fill={
+                  hasData
+                    ? COLORS[i % COLORS.length]
+                    : PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length]
+                }
+              />
             ))}
           </Pie>
           <Tooltip />

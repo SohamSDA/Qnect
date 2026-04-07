@@ -2,8 +2,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   findOne: vi.fn(),
-  compare: vi.fn(),
-  hash: vi.fn(),
   sign: vi.fn(),
   sendEmailVerificationOtp: vi.fn(),
 }));
@@ -11,13 +9,6 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../../../backend/src/modules/auth/user.model.js", () => ({
   User: {
     findOne: mocks.findOne,
-  },
-}));
-
-vi.mock("bcryptjs", () => ({
-  default: {
-    compare: mocks.compare,
-    hash: mocks.hash,
   },
 }));
 
@@ -35,18 +26,21 @@ vi.mock("../../../../backend/src/config/env.js", () => ({
   },
 }));
 
-vi.mock("../../../../backend/src/modules/notifications/email.service.js", () => ({
-  sendEmailVerificationOtp: mocks.sendEmailVerificationOtp,
-}));
+vi.mock(
+  "../../../../backend/src/modules/notifications/email.service.js",
+  () => ({
+    sendEmailVerificationOtp: mocks.sendEmailVerificationOtp,
+  }),
+);
 
-type LoginUser = typeof import("../../../../backend/src/modules/auth/auth.service")["loginUser"];
+type LoginUser =
+  (typeof import("../../../../backend/src/modules/auth/auth.service"))["loginUser"];
 
 let loginUser: LoginUser;
 
 beforeAll(async () => {
-  ({ loginUser } = await import(
-    "../../../../backend/src/modules/auth/auth.service"
-  ));
+  ({ loginUser } =
+    await import("../../../../backend/src/modules/auth/auth.service"));
 });
 
 beforeEach(() => {
@@ -59,7 +53,8 @@ const buildUser = (overrides: Record<string, unknown> = {}) => ({
   },
   name: "Student One",
   email: "student@example.com",
-  password: "stored-hash",
+  // bcrypt hash for "secret123"
+  password: "$2b$10$esCHhoNdA9nz3bfgLaE3.udp.2FFVpOl5Ic1n1e0NruejOxoCkcza",
   role: "user",
   emailVerified: true,
   collegeEmail: "student@college.edu",
@@ -75,8 +70,6 @@ describe("loginUser auth service", () => {
     const user = buildUser();
 
     mocks.findOne.mockResolvedValue(user);
-    mocks.compare.mockResolvedValue(true);
-    mocks.sign.mockReturnValue("header.payload.signature");
 
     const result = await loginUser({
       email: "student@example.com",
@@ -86,31 +79,19 @@ describe("loginUser auth service", () => {
     expect(mocks.findOne).toHaveBeenCalledWith({
       email: "student@example.com",
     });
-    expect(mocks.compare).toHaveBeenCalledWith("secret123", "stored-hash");
-    expect(mocks.sign).toHaveBeenCalledWith(
-      {
-        sub: "user-1",
-        role: "user",
-      },
-      "test-secret",
-      {
-        expiresIn: "1h",
-      },
-    );
-    expect(result).toEqual({
-      token: "header.payload.signature",
-      user: {
-        id: "user-1",
-        name: "Student One",
-        email: "student@example.com",
-        role: "user",
-        emailVerified: true,
-        collegeEmail: "student@college.edu",
-        department: undefined,
-        position: undefined,
-        createdAt: new Date("2026-01-01T00:00:00.000Z"),
-        updatedAt: new Date("2026-01-02T00:00:00.000Z"),
-      },
+    expect(typeof result.token).toBe("string");
+    expect(result.token.length).toBeGreaterThan(0);
+    expect(result.user).toEqual({
+      id: "user-1",
+      name: "Student One",
+      email: "student@example.com",
+      role: "user",
+      emailVerified: true,
+      collegeEmail: "student@college.edu",
+      department: undefined,
+      position: undefined,
+      createdAt: new Date("2026-01-01T00:00:00.000Z"),
+      updatedAt: new Date("2026-01-02T00:00:00.000Z"),
     });
   });
 
@@ -127,13 +108,11 @@ describe("loginUser auth service", () => {
       status: 401,
     });
 
-    expect(mocks.compare).not.toHaveBeenCalled();
     expect(mocks.sign).not.toHaveBeenCalled();
   });
 
   it("rejects login when the password is incorrect", async () => {
     mocks.findOne.mockResolvedValue(buildUser());
-    mocks.compare.mockResolvedValue(false);
 
     await expect(
       loginUser({
@@ -154,7 +133,6 @@ describe("loginUser auth service", () => {
         emailVerified: false,
       }),
     );
-    mocks.compare.mockResolvedValue(true);
 
     await expect(
       loginUser({

@@ -3,8 +3,22 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "@/components/sidebar/AdminSidebar";
 import ProtectedRoute from "../../../components/ProtectedRoute";
-import { error } from "console";
 import { useAuth } from "@/app/context/AuthContext";
+import { apiService } from "@/app/services/api";
+
+type ApiAdminUser = {
+  _id: string;
+  email: string;
+  emailVerified: boolean;
+  createdByAdmin?:
+    | {
+        _id?: string;
+        email?: string;
+        name?: string;
+      }
+    | null;
+  createdAt: string;
+};
 
 type AdminUser = {
   id: string;
@@ -14,8 +28,6 @@ type AdminUser = {
   createdAt: string;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
 export default function ManageAdminsPage() {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [email, setEmail] = useState("");
@@ -23,45 +35,25 @@ export default function ManageAdminsPage() {
   const { token } = useAuth();
 
   const fetchAdmins = async () => {
-    const response = await fetch(`${API_URL}/api/admin/admins`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    });
+    const data = (await apiService.get("/admin/admins", true)) as ApiAdminUser[];
 
-    const data = await response.json();
-
-    console.log("admin data:", data);
-
-    if (!response.ok) {
-      throw new Error(data.message || "fetching admin failed");
-    }
-
-    const normalizedAdmins: AdminUser[] = data.map((admin: any) => ({
+    const normalizedAdmins: AdminUser[] = data.map((admin) => ({
       id: admin._id,
       email: admin.email,
       emailVerified: admin.emailVerified,
-      createdBy: admin.createdByAdmin ?? null,
+      createdBy: admin.createdByAdmin?.email ?? admin.createdByAdmin?.name ?? null,
       createdAt: admin.createdAt.split("T")[0],
     }));
-  
-    setAdmins(normalizedAdmins);  
-  }
 
-  useEffect(() => {
-    try {
-      console.log("Sucessfully fetched admins");
-    }
-    catch (err) {
-      console.error("Error fetching admins:", err);
-    }
-  }, [token]);
+    setAdmins(normalizedAdmins);  
+  };
 
   useEffect(() => {
     if (token) {
-      fetchAdmins();
+      fetchAdmins().catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : "Failed to fetch admins";
+        alert(message);
+      });
     }
   }, [token]);
 
@@ -70,26 +62,15 @@ export default function ManageAdminsPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/admin/invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to send invite");
-      }
+      await apiService.post("/admin/invite", { email }, true);
 
       alert("Admin invitation sent successfully!");
       setEmail("");
-    } catch (err: any) {
+      fetchAdmins().catch(() => undefined);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to send invitation";
       console.error("Invite error:", err);
-      alert(err.message || "Failed to send invitation");
+      alert(message);
     } finally {
       setLoading(false);
     }

@@ -12,8 +12,8 @@ export default function ChartWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 transition hover:shadow-md">
-      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 transition-shadow hover:shadow-md">
+      <h3 className="text-lg font-semibold text-gray-800 mb-1">
         {title}
       </h3>
 
