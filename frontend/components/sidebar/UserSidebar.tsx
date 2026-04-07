@@ -6,10 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
   LayoutDashboard,
-  History,
-  Bell,
   ListChecks,
-  Settings,
   LogOut,
   Menu,
   X,
@@ -39,21 +36,6 @@ const navItems: NavItem[] = [
     href: "/dashboard/user/myqueue",
     label: "My Queue",
     icon: <ListChecks size={20} />,
-  },
-  {
-    href: "/dashboard/user/history",
-    label: "History",
-    icon: <History size={20} />,
-  },
-  {
-    href: "/dashboard/user/notification",
-    label: "Notifications",
-    icon: <Bell size={20} />,
-  },
-  {
-    href: "/dashboard/user/settings",
-    label: "Settings",
-    icon: <Settings size={20} />,
   },
 ];
 

@@ -8,6 +8,7 @@ import {
   Clock,
   MapPin,
   Users,
+  ListChecks,
   CheckCircle,
   AlertCircle,
   ArrowRight,
@@ -231,7 +232,7 @@ export default function UserDashboardPage() {
       )}
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
           href="/dashboard/user/queues"
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group"
@@ -245,27 +246,15 @@ export default function UserDashboardPage() {
           </p>
         </Link>
         <Link
-          href="/dashboard/user/history"
+          href="/dashboard/user/myqueue"
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group"
         >
-          <Clock className="w-8 h-8 text-purple-600 mb-3" />
-          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
-            Queue History
+          <ListChecks className="w-8 h-8 text-indigo-600 mb-3" />
+          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+            My Queue
           </h3>
           <p className="text-sm text-gray-600">
-            View your past queue activities
-          </p>
-        </Link>
-        <Link
-          href="/dashboard/user/notification"
-          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group"
-        >
-          <AlertCircle className="w-8 h-8 text-orange-600 mb-3" />
-          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors">
-            Notifications
-          </h3>
-          <p className="text-sm text-gray-600">
-            Check your queue notifications
+            Track your active token and live status
           </p>
         </Link>
       </div>
