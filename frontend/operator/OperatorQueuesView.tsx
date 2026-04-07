@@ -14,8 +14,16 @@ export type OperatorQueue = {
   status: "ACTIVE" | "PAUSED";
   location: string;
   capacity?: number;
+  activeCounters?: number;
   isFull?: boolean;
   waitingCount?: number;
+};
+
+type QueueEditForm = {
+  name: string;
+  location: string;
+  capacity: string;
+  activeCounters: string;
 };
 
 const parseQueues = (payload: unknown): OperatorQueue[] => {
@@ -39,6 +47,10 @@ export default function OperatorQueuesView() {
   const [actionQueueId, setActionQueueId] = useState<string | null>(null);
   const [capacityEdits, setCapacityEdits] = useState<Record<string, string>>({});
   const [savingCapacity, setSavingCapacity] = useState<string | null>(null);
+  const [editingQueueId, setEditingQueueId] = useState<string | null>(null);
+  const [editForms, setEditForms] = useState<Record<string, QueueEditForm>>({});
+  const [savingEditQueueId, setSavingEditQueueId] = useState<string | null>(null);
+  const [deletingQueueId, setDeletingQueueId] = useState<string | null>(null);
 
   const loadQueues = useCallback(async () => {
     try {
@@ -50,6 +62,20 @@ export default function OperatorQueuesView() {
       setCapacityEdits(
         parsed.reduce(
           (acc, queue) => ({ ...acc, [queue.id]: String(queue.capacity ?? "") }),
+          {},
+        ),
+      );
+      setEditForms(
+        parsed.reduce(
+          (acc, queue) => ({
+            ...acc,
+            [queue.id]: {
+              name: queue.name ?? "",
+              location: queue.location ?? "",
+              capacity: String(queue.capacity ?? ""),
+              activeCounters: String(queue.activeCounters ?? 1),
+            },
+          }),
           {},
         ),
       );
@@ -138,6 +164,115 @@ export default function OperatorQueuesView() {
       toast.error(message);
     } finally {
       setSavingCapacity(null);
+    }
+  };
+
+  const saveQueueEdits = async (queue: OperatorQueue) => {
+    const form = editForms[queue.id];
+    if (!form) {
+      toast.error("Edit form is not ready yet.");
+      return;
+    }
+
+    const nextCapacity = Number(form.capacity);
+    const nextActiveCounters = Number(form.activeCounters);
+
+    if (!form.name.trim()) {
+      toast.error("Queue name is required.");
+      return;
+    }
+
+    if (!form.location.trim()) {
+      toast.error("Queue location is required.");
+      return;
+    }
+
+    if (Number.isNaN(nextCapacity) || nextCapacity <= 0) {
+      toast.error("Capacity must be a positive number.");
+      return;
+    }
+
+    if (
+      Number.isNaN(nextActiveCounters) ||
+      nextActiveCounters < 1 ||
+      nextActiveCounters > 10
+    ) {
+      toast.error("Active counters must be between 1 and 10.");
+      return;
+    }
+
+    try {
+      setSavingEditQueueId(queue.id);
+      await apiService.patch(
+        `/queues/${queue.id}`,
+        {
+          name: form.name.trim(),
+          location: form.location.trim(),
+          capacity: nextCapacity,
+          activeCounters: nextActiveCounters,
+        },
+        true,
+      );
+
+      setQueues((prev) =>
+        prev.map((item) =>
+          item.id === queue.id
+            ? {
+                ...item,
+                name: form.name.trim(),
+                location: form.location.trim(),
+                capacity: nextCapacity,
+                activeCounters: nextActiveCounters,
+                isFull: (item.waitingCount ?? 0) >= nextCapacity,
+              }
+            : item,
+        ),
+      );
+
+      setCapacityEdits((prev) => ({
+        ...prev,
+        [queue.id]: String(nextCapacity),
+      }));
+
+      toast.success("Queue updated successfully.");
+      setEditingQueueId(null);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to update queue";
+      toast.error(message);
+    } finally {
+      setSavingEditQueueId(null);
+    }
+  };
+
+  const deleteQueue = async (queue: OperatorQueue) => {
+    const confirmed = window.confirm(
+      `Delete queue "${queue.name}"? This cannot be undone.`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingQueueId(queue.id);
+      await apiService.delete(`/queues/${queue.id}`, true);
+      setQueues((prev) => prev.filter((item) => item.id !== queue.id));
+      setEditForms((prev) => {
+        const next = { ...prev };
+        delete next[queue.id];
+        return next;
+      });
+      setCapacityEdits((prev) => {
+        const next = { ...prev };
+        delete next[queue.id];
+        return next;
+      });
+      toast.success("Queue deleted successfully.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to delete queue";
+      toast.error(message);
+    } finally {
+      setDeletingQueueId(null);
     }
   };
 
@@ -262,6 +397,23 @@ export default function OperatorQueuesView() {
                   >
                     {queue.status === "ACTIVE" ? "Pause" : "Resume"}
                   </button>
+                  <button
+                    onClick={() =>
+                      setEditingQueueId((prev) =>
+                        prev === queue.id ? null : queue.id,
+                      )
+                    }
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-indigo-200 text-indigo-700 font-semibold hover:bg-indigo-50 transition-colors"
+                  >
+                    {editingQueueId === queue.id ? "Cancel Edit" : "Edit"}
+                  </button>
+                  <button
+                    onClick={() => deleteQueue(queue)}
+                    disabled={deletingQueueId === queue.id}
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-red-200 text-red-700 font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
+                  >
+                    {deletingQueueId === queue.id ? "Deleting..." : "Delete"}
+                  </button>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
@@ -290,6 +442,125 @@ export default function OperatorQueuesView() {
                     Go to kiosk
                   </Link>
                 </div>
+                {editingQueueId === queue.id && (
+                  <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <h4 className="text-sm font-semibold text-slate-700 mb-3">
+                      Edit Queue Details
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Queue name"
+                        value={editForms[queue.id]?.name ?? queue.name}
+                        onChange={(e) =>
+                          setEditForms((prev) => ({
+                            ...prev,
+                            [queue.id]: {
+                              ...(prev[queue.id] ?? {
+                                name: queue.name,
+                                location: queue.location,
+                                capacity: String(queue.capacity ?? ""),
+                                activeCounters: String(
+                                  queue.activeCounters ?? 1,
+                                ),
+                              }),
+                              name: e.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Location"
+                        value={editForms[queue.id]?.location ?? queue.location}
+                        onChange={(e) =>
+                          setEditForms((prev) => ({
+                            ...prev,
+                            [queue.id]: {
+                              ...(prev[queue.id] ?? {
+                                name: queue.name,
+                                location: queue.location,
+                                capacity: String(queue.capacity ?? ""),
+                                activeCounters: String(
+                                  queue.activeCounters ?? 1,
+                                ),
+                              }),
+                              location: e.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                      />
+                      <input
+                        type="number"
+                        min={1}
+                        placeholder="Capacity"
+                        value={editForms[queue.id]?.capacity ?? queue.capacity ?? ""}
+                        onChange={(e) =>
+                          setEditForms((prev) => ({
+                            ...prev,
+                            [queue.id]: {
+                              ...(prev[queue.id] ?? {
+                                name: queue.name,
+                                location: queue.location,
+                                capacity: String(queue.capacity ?? ""),
+                                activeCounters: String(
+                                  queue.activeCounters ?? 1,
+                                ),
+                              }),
+                              capacity: e.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                      />
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        placeholder="Active counters"
+                        value={
+                          editForms[queue.id]?.activeCounters ??
+                          queue.activeCounters ??
+                          1
+                        }
+                        onChange={(e) =>
+                          setEditForms((prev) => ({
+                            ...prev,
+                            [queue.id]: {
+                              ...(prev[queue.id] ?? {
+                                name: queue.name,
+                                location: queue.location,
+                                capacity: String(queue.capacity ?? ""),
+                                activeCounters: String(
+                                  queue.activeCounters ?? 1,
+                                ),
+                              }),
+                              activeCounters: e.target.value,
+                            },
+                          }))
+                        }
+                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                      />
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => saveQueueEdits(queue)}
+                        disabled={savingEditQueueId === queue.id}
+                        className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                      >
+                        {savingEditQueueId === queue.id ? "Saving..." : "Save Changes"}
+                      </button>
+                      <button
+                        onClick={() => setEditingQueueId(null)}
+                        className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

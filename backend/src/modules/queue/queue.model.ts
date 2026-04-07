@@ -10,6 +10,7 @@ export interface IQueue extends Document {
   isFull: boolean;
   tokenExpiryMinutes: number; // ✅ NEW
   operator?: mongoose.Types.ObjectId; // ✅ NEW
+  activeCounters: number; // ✅ Service counters configuration
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +61,15 @@ const queueSchema = new Schema<IQueue>(
     isFull: {
       type: Boolean,
       default: false,
+    },
+
+    // ✅ Number of active service counters for this queue
+    activeCounters: {
+      type: Number,
+      required: true,
+      default: 1,
+      min: 1,
+      max: 10,
     },
   },
   { timestamps: true }

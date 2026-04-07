@@ -2,6 +2,8 @@ import { Router } from "express";
 
 import {
   createQueue,
+  editQueue,
+  deleteQueue,
   generateToken,
   updateTokenStatus,
   getQueueOperatorView,
@@ -23,6 +25,22 @@ router.get("/", getQueuesForUsers);
 // queues
 // Only operators and admins can create queues
 router.post("/", verifyJWT, authorize("operator", "admin"), createQueue);
+
+// Only operators/admins can edit their queues (admins can edit any)
+router.patch(
+  "/:queueId",
+  verifyJWT,
+  authorize("operator", "admin"),
+  editQueue,
+);
+
+// Only operators/admins can delete their queues (admins can delete any)
+router.delete(
+  "/:queueId",
+  verifyJWT,
+  authorize("operator", "admin"),
+  deleteQueue,
+);
 
 // Get the unified view for the operator dashboard
 router.get(

@@ -1,130 +1,172 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { NextRequest } from "next/server";
-import { POST } from "../../../app/api/auth/login/route";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("login API route", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
+const mocks = vi.hoisted(() => ({
+  findOne: vi.fn(),
+  compare: vi.fn(),
+  hash: vi.fn(),
+  sign: vi.fn(),
+  sendEmailVerificationOtp: vi.fn(),
+}));
 
-  it("forwards the login request and returns the backend success payload", async () => {
-    const backendPayload = {
+vi.mock("../../../../backend/src/modules/auth/user.model.js", () => ({
+  User: {
+    findOne: mocks.findOne,
+  },
+}));
+
+vi.mock("bcryptjs", () => ({
+  default: {
+    compare: mocks.compare,
+    hash: mocks.hash,
+  },
+}));
+
+vi.mock("jsonwebtoken", () => ({
+  default: {
+    sign: mocks.sign,
+  },
+}));
+
+vi.mock("../../../../backend/src/config/env.js", () => ({
+  env: {
+    JWT_SECRET: "test-secret",
+    JWT_EXPIRES_IN: "1h",
+    NODE_ENV: "test",
+  },
+}));
+
+vi.mock("../../../../backend/src/modules/notifications/email.service.js", () => ({
+  sendEmailVerificationOtp: mocks.sendEmailVerificationOtp,
+}));
+
+type LoginUser = typeof import("../../../../backend/src/modules/auth/auth.service")["loginUser"];
+
+let loginUser: LoginUser;
+
+beforeAll(async () => {
+  ({ loginUser } = await import(
+    "../../../../backend/src/modules/auth/auth.service"
+  ));
+});
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+const buildUser = (overrides: Record<string, unknown> = {}) => ({
+  _id: {
+    toString: () => "user-1",
+  },
+  name: "Student One",
+  email: "student@example.com",
+  password: "stored-hash",
+  role: "user",
+  emailVerified: true,
+  collegeEmail: "student@college.edu",
+  department: undefined,
+  position: undefined,
+  createdAt: new Date("2026-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2026-01-02T00:00:00.000Z"),
+  ...overrides,
+});
+
+describe("loginUser auth service", () => {
+  it("returns a signed token and safe user when credentials are valid", async () => {
+    const user = buildUser();
+
+    mocks.findOne.mockResolvedValue(user);
+    mocks.compare.mockResolvedValue(true);
+    mocks.sign.mockReturnValue("header.payload.signature");
+
+    const result = await loginUser({
+      email: "student@example.com",
+      password: "secret123",
+    });
+
+    expect(mocks.findOne).toHaveBeenCalledWith({
+      email: "student@example.com",
+    });
+    expect(mocks.compare).toHaveBeenCalledWith("secret123", "stored-hash");
+    expect(mocks.sign).toHaveBeenCalledWith(
+      {
+        sub: "user-1",
+        role: "user",
+      },
+      "test-secret",
+      {
+        expiresIn: "1h",
+      },
+    );
+    expect(result).toEqual({
       token: "header.payload.signature",
       user: {
         id: "user-1",
+        name: "Student One",
         email: "student@example.com",
         role: "user",
+        emailVerified: true,
+        collegeEmail: "student@college.edu",
+        department: undefined,
+        position: undefined,
+        createdAt: new Date("2026-01-01T00:00:00.000Z"),
+        updatedAt: new Date("2026-01-02T00:00:00.000Z"),
       },
-    };
+    });
+  });
 
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify(backendPayload), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-    );
+  it("rejects login when the user does not exist", async () => {
+    mocks.findOne.mockResolvedValue(null);
 
-    vi.stubGlobal("fetch", fetchMock);
-
-    const request = new NextRequest("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    await expect(
+      loginUser({
         email: "student@example.com",
         password: "secret123",
       }),
+    ).rejects.toMatchObject({
+      message: "Invalid email or password",
+      status: 401,
     });
 
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:5000/api/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "student@example.com",
-          password: "secret123",
-        }),
-      },
-    );
-    expect(response.status).toBe(200);
-    expect(data).toEqual(backendPayload);
+    expect(mocks.compare).not.toHaveBeenCalled();
+    expect(mocks.sign).not.toHaveBeenCalled();
   });
 
-  it("maps backend login errors and preserves status/code fields", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          code: "INVALID_CREDENTIALS",
-          requiresVerification: false,
-        }),
-        {
-          status: 401,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      ),
-    );
+  it("rejects login when the password is incorrect", async () => {
+    mocks.findOne.mockResolvedValue(buildUser());
+    mocks.compare.mockResolvedValue(false);
 
-    vi.stubGlobal("fetch", fetchMock);
-
-    const request = new NextRequest("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    await expect(
+      loginUser({
         email: "student@example.com",
         password: "wrong-password",
       }),
+    ).rejects.toMatchObject({
+      message: "Invalid email or password",
+      status: 401,
     });
 
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(401);
-    expect(data).toEqual({
-      message: "Login failed",
-      code: "INVALID_CREDENTIALS",
-      requiresVerification: false,
-    });
+    expect(mocks.sign).not.toHaveBeenCalled();
   });
 
-  it("returns 500 when the downstream login request throws", async () => {
-    const fetchMock = vi.fn().mockRejectedValue(new Error("network down"));
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+  it("rejects login when the email is not verified", async () => {
+    mocks.findOne.mockResolvedValue(
+      buildUser({
+        emailVerified: false,
+      }),
+    );
+    mocks.compare.mockResolvedValue(true);
 
-    vi.stubGlobal("fetch", fetchMock);
-
-    const request = new NextRequest("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    await expect(
+      loginUser({
         email: "student@example.com",
         password: "secret123",
       }),
+    ).rejects.toMatchObject({
+      message: "Email not verified. Please verify your email to continue.",
+      status: 403,
+      code: "EMAIL_NOT_VERIFIED",
     });
 
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(500);
-    expect(data).toEqual({
-      message: "Internal server error",
-    });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(mocks.sign).not.toHaveBeenCalled();
   });
 });

@@ -32,7 +32,7 @@ export async function getEstimatedWaitTime(req: AuthRequest, res: Response) {
 }
 export async function createQueue(req: AuthRequest, res: Response) {
   try {
-    const { name, location, operator, capacity } = req.body;
+    const { name, location, operator, capacity, activeCounters } = req.body;
 
     // Use the explicit operator from body, or default to the creating user
     // (This allows admins to assign operators, or operators to assign themselves)
@@ -55,6 +55,16 @@ export async function createQueue(req: AuthRequest, res: Response) {
       });
     }
 
+    if (
+      activeCounters !== undefined &&
+      (isNaN(Number(activeCounters)) || Number(activeCounters) <= 0 || Number(activeCounters) > 10)
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Active counters must be between 1 and 10",
+      });
+    }
+
     // Check for duplicate queue (same name + location)
     const existingQueue = await Queue.findOne({ name, location });
     if (existingQueue) {
@@ -70,7 +80,8 @@ export async function createQueue(req: AuthRequest, res: Response) {
       operator: operatorId || null,
       isActive: true,
       nextSequence: 1,
-      capacity: capacity ? Number(capacity) : undefined,
+      capacity: capacity ? Number(capacity) : 50,
+      activeCounters: activeCounters ? Number(activeCounters) : 1,
       isFull: false,
     });
 
@@ -78,9 +89,10 @@ export async function createQueue(req: AuthRequest, res: Response) {
       success: true,
       queue: {
         id: queue._id,
-        
         name: queue.name,
         location: queue.location,
+        capacity: queue.capacity,
+        activeCounters: queue.activeCounters,
         isActive: queue.isActive,
         operator: queue.operator,
         createdAt: queue.createdAt,
@@ -91,6 +103,128 @@ export async function createQueue(req: AuthRequest, res: Response) {
     return res.status(500).json({
       success: false,
       error: "Failed to create queue",
+    });
+  }
+}
+
+// Edit existing queue
+export async function editQueue(req: AuthRequest, res: Response) {
+  try {
+    const { queueId } = req.params;
+    const { name, location, capacity, activeCounters } = req.body;
+
+    // Check access
+    const { queue, error } = await ensureQueueAccess(queueId, req.user);
+    if (error) {
+      return res.status(error.status).json({ success: false, error: error.message });
+    }
+    if (!queue) {
+      return res.status(404).json({ success: false, error: "Queue not found" });
+    }
+
+    // Validate inputs
+    if (
+      capacity !== undefined &&
+      (isNaN(Number(capacity)) || Number(capacity) <= 0)
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Capacity must be a positive number",
+      });
+    }
+
+    if (
+      activeCounters !== undefined &&
+      (isNaN(Number(activeCounters)) || Number(activeCounters) <= 0 || Number(activeCounters) > 10)
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Active counters must be between 1 and 10",
+      });
+    }
+
+    // Check for duplicate if changing name/location
+    if ((name || location) && (name !== queue.name || location !== queue.location)) {
+      const existing = await Queue.findOne({
+        name: name || queue.name,
+        location: location || queue.location,
+        _id: { $ne: queueId },
+      });
+      if (existing) {
+        return res.status(409).json({
+          success: false,
+          error: "A queue with this name and location already exists",
+        });
+      }
+    }
+
+    // Update queue
+    if (name) queue.name = name;
+    if (location) queue.location = location;
+    if (capacity !== undefined) queue.capacity = Number(capacity);
+    if (activeCounters !== undefined) queue.activeCounters = Number(activeCounters);
+
+    await queue.save();
+
+    return res.status(200).json({
+      success: true,
+      queue: {
+        id: queue._id,
+        name: queue.name,
+        location: queue.location,
+        capacity: queue.capacity,
+        activeCounters: queue.activeCounters,
+        isActive: queue.isActive,
+        updatedAt: queue.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Edit Queue Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to edit queue",
+    });
+  }
+}
+
+// Delete queue
+export async function deleteQueue(req: AuthRequest, res: Response) {
+  try {
+    const { queueId } = req.params;
+
+    // Check access
+    const { queue, error } = await ensureQueueAccess(queueId, req.user);
+    if (error) {
+      return res.status(error.status).json({ success: false, error: error.message });
+    }
+    if (!queue) {
+      return res.status(404).json({ success: false, error: "Queue not found" });
+    }
+
+    // Check if queue has active tokens
+    const activeTokens = await Token.countDocuments({
+      queue: queueId,
+      status: { $in: [TokenStatus.WAITING, TokenStatus.SERVED] },
+    });
+
+    if (activeTokens > 0) {
+      return res.status(409).json({
+        success: false,
+        error: "Cannot delete queue with active tokens. Please clear all tokens first.",
+      });
+    }
+
+    await Queue.findByIdAndDelete(queueId);
+
+    return res.status(200).json({
+      success: true,
+      message: `Queue "${queue.name}" deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Delete Queue Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete queue",
     });
   }
 }
