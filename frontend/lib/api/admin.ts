@@ -92,7 +92,9 @@ export const fetchDashboardSummary = async (): Promise<DashboardSummary> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch dashboard summary: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch dashboard summary: ${response.statusText}`,
+    );
   }
 
   const summary = await parseJsonResponse<Partial<DashboardSummary>>(response);
@@ -110,13 +112,18 @@ export const fetchDashboardSummary = async (): Promise<DashboardSummary> => {
  * Fetch queue load analytics (active tokens over time)
  */
 export const fetchQueueLoadAnalytics = async (): Promise<QueueLoad[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/admin/analytics/queue-load`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/analytics/queue-load`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch queue load analytics: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch queue load analytics: ${response.statusText}`,
+    );
   }
 
   const data = await parseJsonResponse<QueueLoad[] | unknown>(response);
@@ -132,13 +139,18 @@ export const fetchQueueLoadAnalytics = async (): Promise<QueueLoad[]> => {
  * Fetch tokens served per hour analytics
  */
 export const fetchTokensServedAnalytics = async (): Promise<TokensServed[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/admin/analytics/tokens-served`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/analytics/tokens-served`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch tokens served analytics: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch tokens served analytics: ${response.statusText}`,
+    );
   }
 
   const data = await parseJsonResponse<TokensServed[] | unknown>(response);
@@ -154,13 +166,18 @@ export const fetchTokensServedAnalytics = async (): Promise<TokensServed[]> => {
  * Fetch average wait time per queue analytics
  */
 export const fetchAvgWaitTimeAnalytics = async (): Promise<AvgWaitTime[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/admin/analytics/avg-wait-time`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/analytics/avg-wait-time`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch wait time analytics: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch wait time analytics: ${response.statusText}`,
+    );
   }
 
   const data = await parseJsonResponse<AvgWaitTime[] | unknown>(response);
@@ -175,14 +192,21 @@ export const fetchAvgWaitTimeAnalytics = async (): Promise<AvgWaitTime[]> => {
 /**
  * Fetch token status distribution analytics
  */
-export const fetchTokenStatusAnalytics = async (): Promise<TokenStatusCount[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/admin/analytics/token-status`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+export const fetchTokenStatusAnalytics = async (): Promise<
+  TokenStatusCount[]
+> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/analytics/token-status`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch token status analytics: ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch token status analytics: ${response.statusText}`,
+    );
   }
 
   const data = await parseJsonResponse<TokenStatusCount[] | unknown>(response);
@@ -225,7 +249,7 @@ export const fetchAdmins = async (): Promise<AdminUser[]> => {
 export const createAdmin = async (
   name: string,
   email: string,
-  password: string
+  password: string,
 ) => {
   const response = await fetch(`${API_BASE_URL}/api/admin/create`, {
     method: "POST",
@@ -244,4 +268,3 @@ export const createAdmin = async (
 
   return response.json();
 };
-

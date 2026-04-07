@@ -80,17 +80,11 @@ export default function WaitTimeChart() {
       }
     >
       <ResponsiveContainer width="100%" height={280}>
-        <BarChart
-          data={chartData}
-          layout="vertical"
-          margin={{ left: 40 }}
-        >
+        <BarChart data={chartData} layout="vertical" margin={{ left: 40 }}>
           <XAxis type="number" />
           <YAxis dataKey="queue" type="category" width={110} />
           <Tooltip
-            formatter={(value) =>
-              value !== undefined ? `${value} min` : ""
-            }
+            formatter={(value) => (value !== undefined ? `${value} min` : "")}
           />
           <Bar
             dataKey="avgWaitMinutes"

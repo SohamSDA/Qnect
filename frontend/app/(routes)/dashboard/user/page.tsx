@@ -47,12 +47,14 @@ export default function UserDashboardPage() {
         setCurrentQueue((prev) => {
           if (!prev) return null;
 
-          const data = payload as { tokens: Array<{ status: string; seq: number }> };
+          const data = payload as {
+            tokens: Array<{ status: string; seq: number }>;
+          };
           if (!data?.tokens) return prev;
 
           const myTokenSeq = parseInt(prev.tokenNumber.replace(/\D/g, ""), 10);
           const waitingAhead = data.tokens.filter(
-            (t) => t.status === "waiting" && t.seq < myTokenSeq
+            (t) => t.status === "waiting" && t.seq < myTokenSeq,
           ).length;
 
           return {
@@ -91,7 +93,9 @@ export default function UserDashboardPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Welcome back! Here&apos;s your queue status.</p>
+          <p className="text-gray-600">
+            Welcome back! Here&apos;s your queue status.
+          </p>
         </div>
         <CardSkeleton />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -108,7 +112,9 @@ export default function UserDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here&apos;s your queue status.</p>
+        <p className="text-gray-600">
+          Welcome back! Here&apos;s your queue status.
+        </p>
       </div>
 
       {currentQueue ? (
@@ -155,7 +161,11 @@ export default function UserDashboardPage() {
                   {currentQueue.estimatedWaitTime}m
                 </div>
               )}
-              <div className="text-xs text-gray-600">{currentQueue.status === "served" && currentQueue.expireAt ? "Time to Check In" : "Est. Wait"}</div>
+              <div className="text-xs text-gray-600">
+                {currentQueue.status === "served" && currentQueue.expireAt
+                  ? "Time to Check In"
+                  : "Est. Wait"}
+              </div>
             </div>
             <div className="bg-white rounded-lg p-4 text-center shadow-sm col-span-2 md:col-span-1">
               <CheckCircle className="w-5 h-5 text-gray-400 mx-auto mb-2" />
@@ -174,10 +184,11 @@ export default function UserDashboardPage() {
                   <span className="text-sm font-medium text-yellow-800">
                     {currentQueue.currentPosition === 1
                       ? "You're next! Please proceed to the service area."
-                      : `You're ${currentQueue.currentPosition - 1} ${currentQueue.currentPosition === 2
-                        ? "person"
-                        : "people"
-                      } away!`}
+                      : `You're ${currentQueue.currentPosition - 1} ${
+                          currentQueue.currentPosition === 2
+                            ? "person"
+                            : "people"
+                        } away!`}
                   </span>
                 </div>
               </div>
@@ -185,7 +196,9 @@ export default function UserDashboardPage() {
 
           {currentQueue.status === "served" && currentQueue.expireAt && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 text-center">
-              <p className="text-green-800 font-medium mb-3">It&apos;s your turn! Please check in to confirm your presence.</p>
+              <p className="text-green-800 font-medium mb-3">
+                It&apos;s your turn! Please check in to confirm your presence.
+              </p>
               <button
                 onClick={async () => {
                   try {
@@ -279,7 +292,9 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
         setTimeLeft("00:00");
         setIsExpired(true);
       } else {
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60),
+        );
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
         setTimeLeft(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
       }
@@ -289,7 +304,9 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
   }, [targetDate]);
 
   return (
-    <div className={`text-2xl font-bold ${isExpired ? "text-red-600" : "text-green-600"}`}>
+    <div
+      className={`text-2xl font-bold ${isExpired ? "text-red-600" : "text-green-600"}`}
+    >
       {timeLeft}
     </div>
   );

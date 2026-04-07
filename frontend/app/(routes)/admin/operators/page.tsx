@@ -82,9 +82,12 @@ export default function AdminOperatorsPage() {
         <main className="flex-1 lg:ml-64 xl:ml-72">
           <div className="p-4 sm:p-6 lg:p-8 pt-12 space-y-6">
             <section className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-              <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Operators</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                Operators
+              </h1>
               <p className="text-slate-600 mt-2">
-                This page currently uses demo operator records until backend operator-admin endpoints are connected.
+                This page currently uses demo operator records until backend
+                operator-admin endpoints are connected.
               </p>
             </section>
 
@@ -99,12 +102,19 @@ export default function AdminOperatorsPage() {
 
             <section className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
               {filtered.map((operator) => (
-                <article key={operator.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+                <article
+                  key={operator.id}
+                  className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-lg font-semibold text-slate-900">{operator.name}</p>
+                      <p className="text-lg font-semibold text-slate-900">
+                        {operator.name}
+                      </p>
                       <p className="text-sm text-slate-600">{operator.email}</p>
-                      <p className="text-xs text-slate-500 mt-1">{operator.id}</p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        {operator.id}
+                      </p>
                     </div>
                     <span
                       className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
@@ -121,13 +131,20 @@ export default function AdminOperatorsPage() {
 
                   <div className="mt-4 space-y-2 text-sm text-slate-700">
                     <p>
-                      <span className="font-medium text-slate-900">Department:</span> {operator.department}
+                      <span className="font-medium text-slate-900">
+                        Department:
+                      </span>{" "}
+                      {operator.department}
                     </p>
                     <p>
-                      <span className="font-medium text-slate-900">Assigned Queue:</span> {operator.assignedQueue}
+                      <span className="font-medium text-slate-900">
+                        Assigned Queue:
+                      </span>{" "}
+                      {operator.assignedQueue}
                     </p>
                     <p>
-                      <span className="font-medium text-slate-900">Shift:</span> {operator.shift}
+                      <span className="font-medium text-slate-900">Shift:</span>{" "}
+                      {operator.shift}
                     </p>
                   </div>
                 </article>

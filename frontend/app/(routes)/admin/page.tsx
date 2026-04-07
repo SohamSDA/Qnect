@@ -107,7 +107,8 @@ export default function AdminPage() {
               <>
                 {isLikelyEmptyDay && (
                   <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                    No tokens have been processed today yet. Cards and charts will populate automatically as activity starts.
+                    No tokens have been processed today yet. Cards and charts
+                    will populate automatically as activity starts.
                   </div>
                 )}
 

@@ -10,13 +10,11 @@ type ApiAdminUser = {
   _id: string;
   email: string;
   emailVerified: boolean;
-  createdByAdmin?:
-    | {
-        _id?: string;
-        email?: string;
-        name?: string;
-      }
-    | null;
+  createdByAdmin?: {
+    _id?: string;
+    email?: string;
+    name?: string;
+  } | null;
   createdAt: string;
 };
 
@@ -35,23 +33,28 @@ export default function ManageAdminsPage() {
   const { token } = useAuth();
 
   const fetchAdmins = async () => {
-    const data = (await apiService.get("/admin/admins", true)) as ApiAdminUser[];
+    const data = (await apiService.get(
+      "/admin/admins",
+      true,
+    )) as ApiAdminUser[];
 
     const normalizedAdmins: AdminUser[] = data.map((admin) => ({
       id: admin._id,
       email: admin.email,
       emailVerified: admin.emailVerified,
-      createdBy: admin.createdByAdmin?.email ?? admin.createdByAdmin?.name ?? null,
+      createdBy:
+        admin.createdByAdmin?.email ?? admin.createdByAdmin?.name ?? null,
       createdAt: admin.createdAt.split("T")[0],
     }));
 
-    setAdmins(normalizedAdmins);  
+    setAdmins(normalizedAdmins);
   };
 
   useEffect(() => {
     if (token) {
       fetchAdmins().catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : "Failed to fetch admins";
+        const message =
+          err instanceof Error ? err.message : "Failed to fetch admins";
         alert(message);
       });
     }
@@ -68,7 +71,8 @@ export default function ManageAdminsPage() {
       setEmail("");
       fetchAdmins().catch(() => undefined);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to send invitation";
+      const message =
+        err instanceof Error ? err.message : "Failed to send invitation";
       console.error("Invite error:", err);
       alert(message);
     } finally {
@@ -200,8 +204,7 @@ export default function ManageAdminsPage() {
 
               <p className="text-xs text-slate-500 mt-4">
                 • Admin role changes and self-edits are intentionally disabled.
-                <br />
-                • Bootstrap admin cannot be removed.
+                <br />• Bootstrap admin cannot be removed.
               </p>
             </div>
           </div>
